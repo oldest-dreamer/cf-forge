@@ -4,7 +4,7 @@ import { getDb, type Sql } from '../_lib/db';
 import { error, json } from '../_lib/http';
 import { describeContext, systemPrompt, type TutorContext } from '../_lib/tutorContext';
 
-const FALLBACK_MODELS = ['gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-2.5-flash-lite'];
+const FALLBACK_MODELS = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest'];
 
 /** The model that answered last, tried first for the next 10 minutes. */
 let lastGood: { model: string; at: number } | null = null;
@@ -40,7 +40,8 @@ export async function pickModels(env: Env, base: string): Promise<string[]> {
       const sorted = [...new Set(names)].sort((a, b) => score(b) - score(a));
       const full = sorted.filter((n) => !n.includes('lite') && !/preview|exp/.test(n)).slice(0, 5);
       const lite = sorted.filter((n) => n.includes('lite') && !/preview|exp/.test(n)).slice(0, 2);
-      const ranked = [...full, ...lite];
+      // Lite models first: on the free tier they answer reliably while the big ones are often busy.
+      const ranked = [...lite, ...full];
       if (ranked.length) {
         modelCache = { at: Date.now(), models: ranked };
         return withLastGood(ranked);
@@ -158,9 +159,9 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
   let tried = '';
   for (const model of models) {
     tried = model;
-    // Give each model 10 s to start answering; the timer stops once headers arrive.
+    // Give each model 6 s to start answering; the timer stops once headers arrive.
     const ac = new AbortController();
-    const timer = setTimeout(() => ac.abort(), 10_000);
+    const timer = setTimeout(() => ac.abort(), 6_000);
     let res: Response;
     try {
       res = await fetch(`${base}/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
@@ -189,6 +190,23 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
     // Busy, rate-limited, retired or unknown model: try the next one. A bad key or bad request: stop.
     const tryNext = [404, 429, 500, 503].includes(res.status) || (res.status === 400 && /model/i.test(lastMessage));
     if (!tryNext) break;
+  }
+
+  // Everything busy: wait a moment and give the first model one more try.
+  if (!upstream?.body && [429, 500, 503, 504].includes(lastStatus)) {
+    await new Promise((r) => setTimeout(r, 1500));
+    const retry = await fetch(`${base}/v1beta/models/${models[0]}:streamGenerateContent?alt=sse`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+      body: JSON.stringify(payload),
+    }).catch(() => null);
+    if (retry?.ok && retry.body) {
+      upstream = retry;
+      rememberGood(models[0]);
+    } else if (retry) {
+      lastStatus = retry.status;
+      tried = models[0];
+    }
   }
 
   if (!upstream?.body) {

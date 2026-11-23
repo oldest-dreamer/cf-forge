@@ -28,7 +28,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const models = await pickModels(env, base);
   out.picked = models;
 
-  // Probe every candidate at once, each with a 12 s limit.
+  // Probe every candidate at once, each with an 8 s limit.
   const tries = await Promise.all(
     models.map(async (model) => {
       try {
@@ -36,7 +36,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
           method: 'POST',
           headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
           body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 20 } }),
-          signal: AbortSignal.timeout(12_000),
+          signal: AbortSignal.timeout(8_000),
         });
         const body = (await res.json().catch(() => ({}))) as {
           error?: { message?: string; status?: string };
@@ -49,7 +49,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
           reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
         };
       } catch {
-        return { model, status: 0, error: 'timed out after 12 s' };
+        return { model, status: 0, error: 'timed out after 8 s' };
       }
     }),
   );
