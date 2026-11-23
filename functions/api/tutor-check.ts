@@ -28,31 +28,32 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const models = await pickModels(env, base);
   out.picked = models;
 
-  // Probe every candidate at once, each with an 8 s limit.
-  const tries = await Promise.all(
-    models.map(async (model) => {
-      try {
-        const res = await fetch(`${base}/v1beta/models/${model}:generateContent`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 20 } }),
-          signal: AbortSignal.timeout(8_000),
-        });
-        const body = (await res.json().catch(() => ({}))) as {
-          error?: { message?: string; status?: string };
-          candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[];
-        };
-        return {
-          model,
-          status: res.status,
-          error: body.error ? `${body.error.status ?? ''} ${body.error.message ?? ''}`.trim().slice(0, 160) : undefined,
-          reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
-        };
-      } catch {
-        return { model, status: 0, error: 'timed out after 8 s' };
-      }
-    }),
-  );
+  // Probe one model at a time and stop at the first that answers, so the check
+  // itself does not use up the free per-minute quota.
+  const tries: { model: string; status: number; error?: string; reply?: string }[] = [];
+  for (const model of models) {
+    try {
+      const res = await fetch(`${base}/v1beta/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 200 } }),
+        signal: AbortSignal.timeout(8_000),
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        error?: { message?: string; status?: string };
+        candidates?: { content?: { parts?: { text?: string }[] } }[];
+      };
+      tries.push({
+        model,
+        status: res.status,
+        error: body.error ? `${body.error.status ?? ''} ${body.error.message ?? ''}`.trim().slice(0, 160) : undefined,
+        reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
+      });
+      if (res.ok) break;
+    } catch {
+      tries.push({ model, status: 0, error: 'timed out after 8 s' });
+    }
+  }
   const firstOk = tries.find((x) => x.status === 200);
   const ok = Boolean(firstOk);
   if (firstOk) rememberGood(firstOk.model);

@@ -35,10 +35,10 @@ export async function pickModels(env: Env, base: string): Promise<string[]> {
       const names = (data.models ?? [])
         .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
         .map((m) => m.name.replace(/^models\//, ''))
-        .filter((n) => /^gemini-[\d.]+-flash/.test(n) && !/(tts|image|audio|live|embedding|robotics|computer|thinking-exp)/.test(n));
+        .filter((n) => /^gemini-[\d.]+-flash/.test(n) && versionOf(n) >= 3 && !/(tts|image|audio|live|embedding|robotics|computer|thinking-exp)/.test(n));
       const score = (n: string) => versionOf(n) * 10 - (n.includes('lite') ? 3 : 0) - (/preview|exp/.test(n) ? 5 : 0);
       const sorted = [...new Set(names)].sort((a, b) => score(b) - score(a));
-      const full = sorted.filter((n) => !n.includes('lite') && !/preview|exp/.test(n)).slice(0, 5);
+      const full = sorted.filter((n) => !n.includes('lite') && !/preview|exp/.test(n)).slice(0, 3);
       const lite = sorted.filter((n) => n.includes('lite') && !/preview|exp/.test(n)).slice(0, 2);
       // Lite models first: on the free tier they answer reliably while the big ones are often busy.
       const ranked = [...lite, ...full];
@@ -148,7 +148,8 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
   const payload = {
     systemInstruction: { parts: [{ text: systemPrompt(lang, describeContext(body.context), mode) }] },
     contents: turns.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
-    generationConfig: { maxOutputTokens: 1400 },
+    // Generous: Gemini 3 models spend part of this budget on internal thinking.
+    generationConfig: { maxOutputTokens: 8192 },
   };
 
   const base = (env.GEMINI_BASE || 'https://generativelanguage.googleapis.com').replace(/\/$/, '');

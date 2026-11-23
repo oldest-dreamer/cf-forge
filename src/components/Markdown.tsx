@@ -6,7 +6,21 @@ import { CodeBlock } from './CodeBlock';
  * Builds React elements only (no HTML injection): fenced code, lists,
  * headings, paragraphs, `inline code`, **bold** and *italic*.
  */
-function inline(text: string, keyBase: string): ReactNode[] {
+/** Models sometimes write LaTeX math ($w$, $2 \\times 3$); show it as plain text. */
+function plainMath(text: string) {
+  return text
+    .replace(/\$\$([^$]+)\$\$/g, '$1')
+    .replace(/\$([^$\n]+)\$/g, '$1')
+    .replace(/\\times/g, '×')
+    .replace(/\\leq?(?![a-z])/g, '≤')
+    .replace(/\\geq?(?![a-z])/g, '≥')
+    .replace(/\\neq/g, '≠')
+    .replace(/\\cdot/g, '·')
+    .replace(/\\(text|mathrm|mathbf)\{([^}]*)\}/g, '$2');
+}
+
+function inline(raw: string, keyBase: string): ReactNode[] {
+  const text = plainMath(raw);
   const out: ReactNode[] = [];
   const re = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/g;
   let last = 0;
@@ -46,6 +60,7 @@ export function Markdown({ text }: { text: string }) {
 
     if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
       const ordered = /^\s*\d+\./.test(line);
+      const start = ordered ? Number(/^\s*(\d+)\./.exec(line)![1]) : undefined;
       const items: string[] = [];
       while (i < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[i])) {
         items.push(lines[i].replace(/^\s*([-*]|\d+\.)\s+/, ''));
@@ -54,7 +69,7 @@ export function Markdown({ text }: { text: string }) {
       const k = key++;
       const Tag = ordered ? 'ol' : 'ul';
       blocks.push(
-        <Tag key={k} className={ordered ? 'my-2 list-decimal space-y-1 pl-5' : 'my-2 list-disc space-y-1 pl-5'}>
+        <Tag key={k} start={start} className={ordered ? 'my-2 list-decimal space-y-1 pl-5' : 'my-2 list-disc space-y-1 pl-5'}>
           {items.map((it, j) => (
             <li key={j}>{inline(it, `${k}-${j}`)}</li>
           ))}
