@@ -3,6 +3,7 @@ import { useLocation, useOutlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { TutorButton, TutorPanel } from './TutorPanel';
 
 /** Keeps the page that is leaving on screen during its exit animation. */
 function FrozenOutlet() {
@@ -45,6 +46,8 @@ export function Layout() {
         </motion.main>
       </AnimatePresence>
       <Footer />
+      <TutorButton />
+      <TutorPanel />
     </div>
   );
 }

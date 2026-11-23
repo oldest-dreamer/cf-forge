@@ -9,6 +9,10 @@ import type { L } from '@/i18n/types';
 import { CodeBlock } from './CodeBlock';
 import { CodeEditor } from './CodeEditor';
 import { cn } from '@/lib/cn';
+import { Sparkles } from 'lucide-react';
+import { useTutor } from '@/lib/tutor';
+import { TUTOR } from '@/i18n/tutorStrings';
+import { runQuestion } from '@/lib/askAboutRun';
 
 const V: Record<TestOutcome['verdict'], { label: L; cls: string; Icon: typeof CheckCircle2 }> = {
   passed: { label: RUN.passed, cls: 'text-[#56d364]', Icon: CheckCircle2 },
@@ -123,6 +127,7 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
   const [input, setInput] = useState(tests[0]?.input ?? '');
   const testsRun = useCompiler();
   const customRun = useCompiler();
+  const { ask } = useTutor();
   const limit = Math.max(2000, timeLimitSec * 2000);
 
   const active = custom ? customRun : testsRun;
@@ -241,6 +246,26 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
         </div>
       )}
 
+
+      {(() => {
+        const fails = active.compileError?.kind === 'compile'
+          ? { compileError: active.compileError.message }
+          : (() => {
+              const i = testsRun.results.findIndex((r) => r && r.verdict !== 'passed' && r.verdict !== 'ran');
+              if (custom || i < 0) return null;
+              return { input: tests[i].input, expected: tests[i].output, got: testsRun.results[i] };
+            })();
+        if (!fails) return null;
+        return (
+          <button
+            type="button"
+            onClick={() => ask(runQuestion(t(TUTOR.failIntro), src, fails), 'debug')}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-ember/40 bg-ember/10 px-3 py-1.5 text-sm text-ember hover:bg-ember/15"
+          >
+            <Sparkles size={14} /> {t(TUTOR.askWhy)}
+          </button>
+        );
+      })()}
       <p className="mt-3 text-xs text-slate">{t(RUN.timingNote)}</p>
     </div>
   );

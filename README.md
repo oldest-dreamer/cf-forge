@@ -44,7 +44,7 @@ src/
 | 4 | Live Codeforces dashboard (user's own handle), solved marks, real verdicts ✅ | — |
 | 5 | In-browser C++ compiler (Clang → WebAssembly): Run tests, edit code, custom input, Code runner page ✅ | — |
 | 6 | C++ from zero course (12 lessons, runnable examples, auto-checked exercises, saved progress) + STL toolkit (41 entries) ✅ | — |
-| 7 | Gemini AI tutor on every page, per-user daily limit | Gemini API key from Google AI Studio |
+| 7 | Gemini AI tutor on every page (streaming, page-aware, hints first, Ask-the-tutor-why on failing runs), per-user daily limit ✅ | `GEMINI_API_KEY` secret |
 | 8+ | Problem waves toward ~1000 explained problems | — |
 
 ## In-browser C++ compiler
@@ -76,11 +76,16 @@ A run that passes its time limit is stopped by terminating the runner worker. `<
 | `GET /api/me` | The signed-in user, as the backend sees them |
 | `GET/PUT /api/profile` | Display name, Codeforces handle, site language (table `cf_profiles`, created automatically) |
 | `GET/PUT /api/progress` | Finished lessons (table `cf_lesson_progress`, created automatically) |
+| `GET /api/tutor` | Tutor status and questions left today |
+| `POST /api/tutor` | Ask the Gemini tutor; streams plain text. Context is built server-side from site data (table `cf_ai_usage` counts questions) |
 
 | Variable | Where | Secret? |
 | --- | --- | --- |
 | `DATABASE_URL` | Cloudflare Pages → Settings → Variables and Secrets | **Yes** (encrypt) |
 | `NEON_AUTH_URL` | optional, defaults to the project's Auth URL | No |
+| `GEMINI_API_KEY` | Cloudflare Pages → Settings → Variables and Secrets | **Yes** (encrypt) |
+| `GEMINI_MODEL` | optional, force a model (default tries `gemini-3.8-flash`, then `gemini-3.5-flash-lite`) | No |
+| `TUTOR_DAILY_LIMIT` | optional, questions per user per day (default 25) | No |
 | `VITE_NEON_AUTH_URL` | optional build-time override for the browser | No |
 
 Local backend: put variables in `.dev.vars` (git-ignored), then `npm run build && npx wrangler pages dev dist`.

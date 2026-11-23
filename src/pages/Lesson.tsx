@@ -9,6 +9,7 @@ import { PageHead } from '@/components/PageHead';
 import { TryIt } from '@/components/TryIt';
 import { ExerciseBox } from '@/components/ExerciseBox';
 import NotFound from './NotFound';
+import { useTutorPage } from '@/lib/tutor';
 
 function BlockView({ b }: { b: Block }) {
   const { t } = useI18n();
@@ -56,6 +57,7 @@ export default function Lesson() {
   const { t, num } = useI18n();
   const { lessonsDone } = useAccount();
   const lesson = LESSON_BY_ID[id];
+  useTutorPage({ kind: 'lesson', id }, lesson ? t(lesson.title) : id);
   if (!lesson) return <NotFound />;
 
   const i = lessonIndex(id);

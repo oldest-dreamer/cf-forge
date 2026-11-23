@@ -1,4 +1,4 @@
-import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
+import { neon, neonConfig, type NeonQueryFunction } from '@neondatabase/serverless';
 import type { Env } from './env';
 import { error } from './http';
 
@@ -24,6 +24,13 @@ async function ensureSchema(sql: Sql) {
       completed_at timestamptz NOT NULL DEFAULT now(),
       PRIMARY KEY (user_id, lesson_id)
     )`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS cf_ai_usage (
+      user_id text NOT NULL,
+      day     date NOT NULL,
+      count   integer NOT NULL DEFAULT 0,
+      PRIMARY KEY (user_id, day)
+    )`;
 }
 
 /** A query function with the schema guaranteed, or a 503 Response if the DB is not connected. */
@@ -31,6 +38,8 @@ export async function getDb(env: Env): Promise<Sql | Response> {
   if (!env.DATABASE_URL) {
     return error(503, 'DB_NOT_CONFIGURED', 'The database is not connected yet.');
   }
+  // Local testing only: point the driver at a stand-in SQL-over-HTTP server.
+  if (env.DATABASE_HTTP_ENDPOINT) neonConfig.fetchEndpoint = env.DATABASE_HTTP_ENDPOINT;
   const sql = neon(env.DATABASE_URL);
   if (!schemaReady) {
     schemaReady = ensureSchema(sql).catch((e) => {

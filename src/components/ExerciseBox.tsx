@@ -11,6 +11,10 @@ import { CodeEditor } from './CodeEditor';
 import { CodeBlock } from './CodeBlock';
 import { PhaseBar, ResultRow } from './RunPanel';
 import { cn } from '@/lib/cn';
+import { Sparkles } from 'lucide-react';
+import { useTutor } from '@/lib/tutor';
+import { TUTOR } from '@/i18n/tutorStrings';
+import { runQuestion } from '@/lib/askAboutRun';
 
 const draftKey = (id: string) => `cf-forge:exercise:${id}`;
 
@@ -51,6 +55,7 @@ export function ExerciseBox({ lesson }: { lesson: Lesson }) {
   const [solution, setSolution] = useState(false);
   const [justPassed, setJustPassed] = useState(false);
   const r = useCompiler();
+  const { ask } = useTutor();
   const busy = r.phase === 'downloading' || r.phase === 'compiling' || r.phase === 'running';
   const done = lessonsDone.has(lesson.id);
 
@@ -167,6 +172,26 @@ export function ExerciseBox({ lesson }: { lesson: Lesson }) {
           </ul>
         </div>
       )}
+
+      {(() => {
+        const fails = r.compileError?.kind === 'compile'
+          ? { compileError: r.compileError.message }
+          : (() => {
+              const i = r.results.findIndex((x) => x && x.verdict !== 'passed');
+              if (r.phase !== 'done' || i < 0) return null;
+              return { input: ex.tests[i].input, expected: ex.tests[i].output, got: r.results[i] };
+            })();
+        if (!fails) return null;
+        return (
+          <button
+            type="button"
+            onClick={() => ask(runQuestion(t(TUTOR.failIntro), code, fails), 'debug')}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-ember/40 bg-ember/10 px-3 py-1.5 text-sm text-ember hover:bg-ember/15"
+          >
+            <Sparkles size={14} /> {t(TUTOR.askWhy)}
+          </button>
+        );
+      })()}
     </section>
   );
 }

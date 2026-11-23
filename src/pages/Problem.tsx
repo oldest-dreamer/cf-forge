@@ -13,6 +13,7 @@ import { RunPanel } from '@/components/RunPanel';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
 import { ProblemStatusBadge, ProblemTracker } from '@/components/ProblemTracker';
+import { useTutorPage } from '@/lib/tutor';
 
 function useActivePart() {
   const [active, setActive] = useState<ProblemPart>('overview');
@@ -150,6 +151,7 @@ export default function Problem() {
   const { t, num } = useI18n();
   const p = PROBLEM_BY_ID[id.toUpperCase()];
   const active = useActivePart();
+  useTutorPage({ kind: 'problem', id: p?.id ?? id }, p ? `${p.id} ${p.name}` : id);
 
   if (!p) {
     return (

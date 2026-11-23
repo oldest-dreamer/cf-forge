@@ -7,6 +7,7 @@ import { RatingRange } from '@/components/RatingPill';
 import { RANKS } from '@/lib/ranks';
 import { cn } from '@/lib/cn';
 import { PageHead } from '@/components/PageHead';
+import { useTutorPage } from '@/lib/tutor';
 
 const FLOOR = 0;
 const CEIL = 3800;
@@ -108,6 +109,7 @@ function ContestDetail({ c }: { c: ContestType }) {
 export default function Contests() {
   const { t } = useI18n();
   const [active, setActive] = useState(CONTESTS[0].id);
+  useTutorPage({ kind: 'contests' }, t(S.contests.title));
   const current = CONTESTS.find((c) => c.id === active)!;
 
   return (

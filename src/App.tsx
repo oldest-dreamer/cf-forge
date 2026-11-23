@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout';
 import { RequireAuth, GuestOnly } from '@/components/RequireAuth';
 import { ForgeLoader } from '@/components/ForgeLoader';
 import { AccountProvider } from '@/lib/account';
+import { TutorProvider } from '@/lib/tutor';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
 
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
     element: (
       <RequireAuth>
         <AccountProvider>
-          <Layout />
+          <TutorProvider>
+            <Layout />
+          </TutorProvider>
         </AccountProvider>
       </RequireAuth>
     ),

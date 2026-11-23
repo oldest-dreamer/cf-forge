@@ -9,12 +9,15 @@ import { LESSON_BY_ID, lessonIndex } from '@/data/course';
 import { PageHead } from '@/components/PageHead';
 import { CodeBlock } from '@/components/CodeBlock';
 import { cn } from '@/lib/cn';
+import { useTutorPage } from '@/lib/tutor';
 
 export default function Toolkit() {
   const { t, num } = useI18n();
   const { hash } = useLocation();
   const [q, setQ] = useState('');
   const [flash, setFlash] = useState<string | null>(null);
+  const entryId = hash.slice(1);
+  useTutorPage({ kind: 'toolkit', id: entryId || undefined }, entryId ? `${t(COURSE.toolkit.nav)}: ${entryId}` : t(COURSE.toolkit.nav));
 
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();

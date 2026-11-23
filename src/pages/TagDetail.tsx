@@ -7,11 +7,13 @@ import { featuredForTag, problemsForTag } from '@/data/problems';
 import { PageHead } from '@/components/PageHead';
 import { ProblemRow } from '@/components/ProblemRow';
 import NotFound from './NotFound';
+import { useTutorPage } from '@/lib/tutor';
 
 export default function TagDetail() {
   const { slug = '' } = useParams();
   const { t } = useI18n();
   const tag = TAG_BY_SLUG[slug];
+  useTutorPage({ kind: 'tag', id: slug }, tag ? t(tag.name) : slug);
   if (!tag) return <NotFound />;
 
   const featured = featuredForTag(tag.slug);
