@@ -81,7 +81,7 @@ function Solutions({ p }: { p: ProblemEntry }) {
 
   return (
     <div>
-      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-xl bg-iron p-1">
+      <div role="tablist" className="isolate flex gap-1 overflow-x-auto rounded-xl bg-iron p-1">
         {p.solutions.map((x, i) => {
           const on = x.id === s.id;
           return (

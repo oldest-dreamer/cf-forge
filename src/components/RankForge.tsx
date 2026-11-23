@@ -77,6 +77,7 @@ export function RankForge() {
 
       <div className="relative mt-2 h-5 text-xs text-slate tabular-nums" aria-hidden="true">
         {bands.map((b) => {
+          if (b.id === 'im') return null; // 2,300 sits too close to 2,400 to label
           const left = ((b.lo - FLOOR) / (CEIL - FLOOR)) * 100;
           return (
             <span key={b.id} className="absolute hidden -translate-x-1/2 first:translate-x-0 sm:inline" style={{ left: `${left}%` }}>

@@ -39,8 +39,8 @@ src/
 | Phase | What ships | You set up before it |
 | --- | --- | --- |
 | 1 | Design system, EN/BN, contest guide, 36 tag pages, ProblemEntry schema, first problems | — |
-| 2 | Deploy on Cloudflare Pages | Connect this repo in Cloudflare Pages |
-| 3 | Login (email + password, Continue with Google), login required | Neon project + Neon Auth |
+| 2 | Deploy on Cloudflare Pages ✅ | Connect this repo in Cloudflare Pages |
+| 3 | Login (email + password, Continue with Google), login required, profile API ✅ | Neon project + Neon Auth, `DATABASE_URL` secret |
 | 4 | Live Codeforces profile (user's own handle) and real verdicts | — |
 | 5 | In-browser C++ compiler (WebAssembly) for Run | — |
 | 6 | C++ from zero course + STL toolkit | — |
@@ -55,6 +55,25 @@ src/
 - Node version: 22 (from `.node-version`)
 
 `public/_redirects` sends every route to `index.html` so deep links work.
+
+## Backend (Cloudflare Pages Functions)
+
+`functions/api/*` runs on Cloudflare. Every request carries the user's Neon Auth JWT
+(`Authorization: Bearer …`), verified against `<NEON_AUTH_URL>/.well-known/jwks.json`.
+
+| Route | What it does |
+| --- | --- |
+| `GET /api/health` | API up? Database connected? |
+| `GET /api/me` | The signed-in user, as the backend sees them |
+| `GET/PUT /api/profile` | Display name, Codeforces handle, site language (table `cf_profiles`, created automatically) |
+
+| Variable | Where | Secret? |
+| --- | --- | --- |
+| `DATABASE_URL` | Cloudflare Pages → Settings → Variables and Secrets | **Yes** (encrypt) |
+| `NEON_AUTH_URL` | optional, defaults to the project's Auth URL | No |
+| `VITE_NEON_AUTH_URL` | optional build-time override for the browser | No |
+
+Local backend: put variables in `.dev.vars` (git-ignored), then `npm run build && npx wrangler pages dev dist`.
 
 Secrets (Neon, Gemini) go into **Cloudflare → Pages → Settings → Variables and Secrets**, never into the repo.
 

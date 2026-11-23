@@ -7,6 +7,7 @@ import { S } from '@/i18n/strings';
 import { cn } from '@/lib/cn';
 import { Logo } from './Logo';
 import { LangToggle } from './LangToggle';
+import { UserMenu } from './UserMenu';
 
 const LINKS = [
   { to: '/contests', label: S.nav.contests },
@@ -58,8 +59,9 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-3">
           <LangToggle />
+          <UserMenu />
           <button
             type="button"
             className="grid size-10 place-items-center rounded-lg text-slate hover:bg-iron hover:text-ash md:hidden"

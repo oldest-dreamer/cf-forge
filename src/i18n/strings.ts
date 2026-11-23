@@ -177,6 +177,77 @@ export const S = {
     },
   },
 
+  auth: {
+    signInTitle: { en: 'Sign in to CF Forge', bn: 'CF Forge-এ লগইন করুন' },
+    signUpTitle: { en: 'Create your CF Forge account', bn: 'CF Forge অ্যাকাউন্ট তৈরি করুন' },
+    signInTab: { en: 'Sign in', bn: 'লগইন' },
+    signUpTab: { en: 'Create account', bn: 'অ্যাকাউন্ট তৈরি' },
+    google: { en: 'Continue with Google', bn: 'Google দিয়ে চালিয়ে যান' },
+    or: { en: 'or use your email', bn: 'অথবা ইমেইল দিয়ে' },
+    name: { en: 'Your name', bn: 'আপনার নাম' },
+    email: { en: 'Email', bn: 'ইমেইল' },
+    password: { en: 'Password', bn: 'পাসওয়ার্ড' },
+    passwordHint: { en: 'At least 8 characters.', bn: 'কমপক্ষে ৮ অক্ষর।' },
+    show: { en: 'Show password', bn: 'পাসওয়ার্ড দেখুন' },
+    hide: { en: 'Hide password', bn: 'পাসওয়ার্ড লুকান' },
+    signInCta: { en: 'Sign in', bn: 'লগইন করুন' },
+    signUpCta: { en: 'Create account', bn: 'অ্যাকাউন্ট তৈরি করুন' },
+    working: { en: 'Checking…', bn: 'যাচাই চলছে…' },
+    redirecting: { en: 'Opening Google…', bn: 'Google খোলা হচ্ছে…' },
+    noAccount: { en: 'New here?', bn: 'নতুন?' },
+    haveAccount: { en: 'Already have an account?', bn: 'আগে থেকেই অ্যাকাউন্ট আছে?' },
+    pitch: {
+      en: 'Contest types decoded, 36 tags, and problems explained in 11 parts with real C++. Sign in to start training.',
+      bn: 'কনটেস্টের ধরন, ৩৬টি ট্যাগ, আর আসল C++-সহ ১১ ভাগে ব্যাখ্যা করা প্রবলেম। অনুশীলন শুরু করতে লগইন করুন।',
+    },
+    errors: {
+      nameRequired: { en: 'Enter your name.', bn: 'আপনার নাম লিখুন।' },
+      emailInvalid: { en: 'Enter a valid email address.', bn: 'সঠিক ইমেইল ঠিকানা লিখুন।' },
+      passwordShort: { en: 'Use at least 8 characters.', bn: 'কমপক্ষে ৮ অক্ষর ব্যবহার করুন।' },
+      wrongCredentials: { en: 'That email and password do not match. Check both and try again.', bn: 'ইমেইল আর পাসওয়ার্ড মিলছে না। দুটোই দেখে আবার চেষ্টা করুন।' },
+      emailTaken: { en: 'An account with this email already exists. Sign in instead.', bn: 'এই ইমেইলে আগেই অ্যাকাউন্ট আছে। লগইন করুন।' },
+      network: { en: 'Could not reach the sign-in server. Check your connection and try again.', bn: 'লগইন সার্ভারে পৌঁছানো যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।' },
+      google: { en: 'Google sign-in did not finish. Try again.', bn: 'Google লগইন শেষ হয়নি। আবার চেষ্টা করুন।' },
+      generic: { en: 'Sign-in failed. Try again in a moment.', bn: 'লগইন হয়নি। একটু পরে আবার চেষ্টা করুন।' },
+    },
+  },
+
+  user: {
+    profile: { en: 'My profile', bn: 'আমার প্রোফাইল' },
+    signOut: { en: 'Sign out', bn: 'লগআউট' },
+    signingOut: { en: 'Signing out…', bn: 'লগআউট হচ্ছে…' },
+  },
+
+  profile: {
+    title: { en: 'My profile', bn: 'আমার প্রোফাইল' },
+    lede: {
+      en: 'Your account and training settings. Add your Codeforces handle whenever you like; your live stats arrive in the next phase.',
+      bn: 'আপনার অ্যাকাউন্ট আর অনুশীলনের সেটিংস। যখন খুশি কোডফোর্সেস হ্যান্ডেল যোগ করুন; লাইভ পরিসংখ্যান আসছে পরের ধাপে।',
+    },
+    name: { en: 'Display name', bn: 'প্রদর্শিত নাম' },
+    email: { en: 'Email', bn: 'ইমেইল' },
+    handle: { en: 'Codeforces handle', bn: 'কোডফোর্সেস হ্যান্ডেল' },
+    handlePlaceholder: { en: 'Your Codeforces handle', bn: 'আপনার কোডফোর্সেস হ্যান্ডেল' },
+    handleHint: {
+      en: 'Optional. 3 to 24 letters, digits, _ . or -',
+      bn: 'ঐচ্ছিক। ৩ থেকে ২৪টি অক্ষর, সংখ্যা, _ . বা -',
+    },
+    handleInvalid: {
+      en: 'A handle uses 3 to 24 letters, digits, _ . or -',
+      bn: 'হ্যান্ডেলে ৩ থেকে ২৪টি অক্ষর, সংখ্যা, _ . বা - থাকে।',
+    },
+    language: { en: 'Site language', bn: 'সাইটের ভাষা' },
+    save: { en: 'Save profile', bn: 'প্রোফাইল সেভ করুন' },
+    saving: { en: 'Saving…', bn: 'সেভ হচ্ছে…' },
+    saved: { en: 'Profile saved', bn: 'প্রোফাইল সেভ হয়েছে' },
+    loadError: {
+      en: 'Your saved settings could not be loaded. The profile server is not connected yet.',
+      bn: 'সেভ করা সেটিংস লোড করা যায়নি। প্রোফাইল সার্ভার এখনও যুক্ত হয়নি।',
+    },
+    saveError: { en: 'Could not save. Try again in a moment.', bn: 'সেভ করা যায়নি। একটু পরে আবার চেষ্টা করুন।' },
+    joined: { en: 'Joined', bn: 'যোগ দিয়েছেন' },
+  },
+
   notFound: {
     title: { en: 'This page is not on the anvil.', bn: 'এই পাতাটি এখানে নেই।' },
     body: { en: 'Check the address, or head back home.', bn: 'ঠিকানাটি দেখে নিন, অথবা হোমে ফিরে যান।' },
