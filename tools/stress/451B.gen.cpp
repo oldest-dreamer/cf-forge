@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 7 + 1; std::vector<int> a(n); std::iota(a.begin(), a.end(), 1); int m = r() % 3; if (m == 0) std::shuffle(a.begin(), a.end(), r); else if (m == 1) { int l = r() % n, rr = l + r() % (n - l); std::reverse(a.begin() + l, a.begin() + rr + 1); } printf("%d\n", n); for (int x : a) printf("%d ", x * 3); puts(""); }
