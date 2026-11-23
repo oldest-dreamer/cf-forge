@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int t; cin >> t; while (t--) { int n; cin >> n; vector<long long> a(n); for (auto& x : a) cin >> x; int bestLen = 0; long long bestSum = LLONG_MIN; for (int m = 1; m < (1 << n); m++) { vector<long long> s; for (int i = 0; i < n; i++) if (m >> i & 1) s.push_back(a[i]); bool ok = true; for (size_t i = 1; i < s.size(); i++) if ((s[i] > 0) == (s[i - 1] > 0)) ok = false; if (!ok) continue; long long sum = accumulate(s.begin(), s.end(), 0LL); int len = s.size(); if (len > bestLen || (len == bestLen && sum > bestSum)) bestLen = len, bestSum = sum; } cout << bestSum << "\n"; } }

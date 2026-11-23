@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main() { int t; std::cin >> t; while (t--) { int n; std::cin >> n; std::vector<int> w(n); for (auto& x : w) std::cin >> x; int best = 0; for (int i = 0; i <= n; i++) for (int j = 0; i + j <= n; j++) { long long A = 0, B = 0; for (int k = 0; k < i; k++) A += w[k]; for (int k = 0; k < j; k++) B += w[n - 1 - k]; if (A == B) best = std::max(best, i + j); } std::cout << best << "\n"; } }

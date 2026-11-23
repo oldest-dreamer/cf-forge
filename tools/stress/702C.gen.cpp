@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 6 + 1, m = r() % 6 + 1; std::vector<int> a(n), b(m); for (auto& x : a) x = int(r() % 41) - 20; for (auto& x : b) x = int(r() % 41) - 20; std::sort(a.begin(), a.end()); std::sort(b.begin(), b.end()); printf("%d %d\n", n, m); for (int x : a) printf("%d ", x); puts(""); for (int x : b) printf("%d ", x); puts(""); }
