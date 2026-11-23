@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int t = r() % 2 + 1; printf("%d\n", t); while (t--) { int n = r() % 8 + 2; printf("%d\n", n); for (int i = 2; i <= n; i++) { int a = r() % (i - 1) + 1; if (r() % 2) printf("%d %d\n", a, i); else printf("%d %d\n", i, a); } int q = r() % 4 + 1; printf("%d\n", q); while (q--) printf("%d %d\n", int(r() % n + 1), int(r() % n + 1)); } }

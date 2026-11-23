@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n, m; cin >> n >> m; vector<array<long long,3>> e(m); for (auto& x : e) cin >> x[0] >> x[1] >> x[2]; vector<long long> d(n + 1, LLONG_MAX / 4); vector<int> par(n + 1, -1); d[1] = 0; for (int it = 0; it < n; it++) for (auto [a, b, w] : e) for (int dir = 0; dir < 2; dir++) { int u = dir ? b : a, v = dir ? a : b; if (d[u] + w < d[v]) d[v] = d[u] + w, par[v] = u; } if (d[n] >= LLONG_MAX / 4) { cout << -1 << "\n"; return 0; } vector<int> p; for (int v = n; v != -1; v = par[v]) p.push_back(v); reverse(p.begin(), p.end()); for (int v : p) cout << v << ' '; cout << "\n"; }

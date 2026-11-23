@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n; cin >> n; vector<int> x(n), y(n); for (int i = 0; i < n; i++) cin >> x[i] >> y[i]; vector<vector<int>> reach(n, vector<int>(n, 0)); for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) reach[i][j] = (i == j || x[i] == x[j] || y[i] == y[j]); for (int k = 0; k < n; k++) for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) if (reach[i][k] && reach[k][j]) reach[i][j] = 1; vector<int> done(n, 0); int comps = 0; for (int i = 0; i < n; i++) if (!done[i]) { comps++; for (int j = 0; j < n; j++) if (reach[i][j]) done[j] = 1; } cout << comps - 1 << "\n"; }

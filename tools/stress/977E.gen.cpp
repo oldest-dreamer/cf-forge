@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 9 + 1; std::set<std::pair<int,int>> e; int tries = r() % 12; while (tries--) { int a = r() % n + 1, b = r() % n + 1; if (a == b) continue; e.insert({std::min(a, b), std::max(a, b)}); } if (n >= 3 && r() % 2) { e.insert({1, 2}); e.insert({2, 3}); e.insert({1, 3}); } printf("%d %d\n", n, (int)e.size()); for (auto [a, b] : e) printf("%d %d\n", a, b); }

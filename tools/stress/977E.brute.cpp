@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n, m; cin >> n >> m; vector<vector<int>> adj(n + 1); for (int i = 0; i < m; i++) { int a, b; cin >> a >> b; adj[a].push_back(b); adj[b].push_back(a); } vector<int> comp(n + 1, 0); int c = 0; for (int s = 1; s <= n; s++) if (!comp[s]) { c++; vector<int> q = {s}; comp[s] = c; for (size_t i = 0; i < q.size(); i++) for (int u : adj[q[i]]) if (!comp[u]) comp[u] = c, q.push_back(u); } int ans = 0; for (int k = 1; k <= c; k++) { int verts = 0, edges2 = 0; bool all2 = true; for (int v = 1; v <= n; v++) if (comp[v] == k) { verts++; edges2 += adj[v].size(); if (adj[v].size() != 2) all2 = false; } if (all2 && verts >= 3 && edges2 / 2 == verts) ans++; } cout << ans << "\n"; }

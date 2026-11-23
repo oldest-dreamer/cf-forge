@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main() { int q; std::cin >> q; while (q--) { int n; std::cin >> n; std::vector<int> p(n + 1); for (int i = 1; i <= n; i++) std::cin >> p[i]; for (int i = 1; i <= n; i++) { std::vector<int> owner(n + 1); for (int k = 1; k <= n; k++) owner[k] = k; int d = 0; do { std::vector<int> no(n + 1); for (int k = 1; k <= n; k++) no[p[k]] = owner[k]; owner = no; d++; } while (owner[i] != i); std::cout << d << ' '; } std::cout << "\n"; } }

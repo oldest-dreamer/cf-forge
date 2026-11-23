@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int t; cin >> t; while (t--) { int n; cin >> n; vector<vector<int>> adj(n + 1); for (int i = 0; i < n - 1; i++) { int a, b; cin >> a >> b; adj[a].push_back(b); adj[b].push_back(a); } vector<int> par(n + 1, 0), q = {1}; par[1] = -1; for (size_t i = 0; i < q.size(); i++) for (int u : adj[q[i]]) if (u != par[q[i]]) par[u] = q[i], q.push_back(u); auto leaves = [&](int x) { long long c = 0; for (int v = 1; v <= n; v++) { bool leaf = v != 1 && adj[v].size() == 1; if (n == 1) leaf = true; if (!leaf) continue; for (int y = v; y != -1; y = par[y]) if (y == x) { c++; break; } } return c; }; int qq; cin >> qq; while (qq--) { int x, y; cin >> x >> y; cout << leaves(x) * leaves(y) << "\n"; } } }

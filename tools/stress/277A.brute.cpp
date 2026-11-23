@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n, m; cin >> n >> m; vector<set<int>> L(n); bool any = false; for (auto& s : L) { int k; cin >> k; if (k) any = true; while (k--) { int x; cin >> x; s.insert(x); } } if (!any) { cout << n << "\n"; return 0; } vector<int> comp(n); iota(comp.begin(), comp.end(), 0); for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) { bool share = false; for (int x : L[i]) if (L[j].count(x)) share = true; if (share && comp[i] != comp[j]) { int a = comp[i], b = comp[j]; for (auto& c : comp) if (c == b) c = a; } } set<int> s(comp.begin(), comp.end()); cout << s.size() - 1 << "\n"; }

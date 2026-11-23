@@ -48,6 +48,22 @@ for (const p of PROBLEMS) {
       fail(`${s.id} does not compile:\n${e.stderr}`);
     }
   }
+  // Problems that accept several correct outputs ship a checker: tools/stress/<ID>.check.cpp,
+  // run as "check input output answer"; exit code 0 means accepted.
+  const checkFile = join(root, 'tools/stress', `${p.id}.check.cpp`);
+  const checkBin = existsSync(checkFile) ? build(`${p.id}_check`, readText(checkFile)) : null;
+  const same = (input, got, want) => {
+    if (!checkBin) return norm(got) === norm(want);
+    writeFileSync(join(tmp, 'in.txt'), input);
+    writeFileSync(join(tmp, 'out.txt'), got);
+    writeFileSync(join(tmp, 'ans.txt'), want);
+    try {
+      execFileSync(checkBin, [join(tmp, 'in.txt'), join(tmp, 'out.txt'), join(tmp, 'ans.txt')], { stdio: 'pipe' });
+      return true;
+    } catch {
+      return false;
+    }
+  };
   const cases = [...p.samples.map((x) => ({ input: x.input, output: x.output })), ...p.tests];
   const slow = new Set(p.solutions.filter((s) => !s.accepted).map((s) => s.id));
   for (const [id, bin] of Object.entries(bins)) {
@@ -56,7 +72,7 @@ for (const p of PROBLEMS) {
       checks++;
       const got = run(bin, c.input + '\n');
       if (slow.has(id) && !got.trim()) continue; // a slow reference may skip inputs too big for it
-      if (norm(got) !== norm(c.output)) fail(`${id} on ${JSON.stringify(c.input).slice(0, 60)}: got ${norm(got).slice(0, 60)}, expected ${norm(c.output).slice(0, 60)}`);
+      if (!same(c.input + '\n', got, c.output)) fail(`${id} on ${JSON.stringify(c.input).slice(0, 60)}: got ${norm(got).slice(0, 60)}, expected ${norm(c.output).slice(0, 60)}`);
     }
   }
 
@@ -75,13 +91,13 @@ for (const p of PROBLEMS) {
   let bad = 0;
   for (let seed = 1; seed <= ROUNDS && bad < 3; seed++) {
     const input = run(genBin, '', [String(seed)]);
-    const want = norm(run(refBin, input));
+    const want = run(refBin, input);
     for (const [id, bin] of Object.entries(bins)) {
       checks++;
-      const got = norm(run(bin, input));
-      if (got !== want) {
+      const got = run(bin, input);
+      if (!same(input, got, want)) {
         bad++;
-        fail(`stress seed ${seed}: ${id} says ${got.slice(0, 50)}, reference says ${want.slice(0, 50)}\n    input: ${JSON.stringify(input).slice(0, 120)}`);
+        fail(`stress seed ${seed}: ${id} says ${norm(got).slice(0, 50)}, reference says ${norm(want).slice(0, 50)}\n    input: ${JSON.stringify(input).slice(0, 120)}`);
       }
     }
   }

@@ -1,0 +1,4 @@
+#include <bits/stdc++.h>
+using namespace std;
+// simulate: try every shot order via BFS over states (n <= 4 -> 2^16 states)
+int main() { int t; cin >> t; while (t--) { int n; cin >> n; int target = 0; for (int i = 0; i < n; i++) { string s; cin >> s; for (int j = 0; j < n; j++) if (s[j] == '1') target |= 1 << (i * n + j); } vector<char> seen(1 << (n * n), 0); vector<int> q = {0}; seen[0] = 1; bool ok = false; for (size_t qi = 0; qi < q.size(); qi++) { int st = q[qi]; if (st == target) { ok = true; break; } for (int k = 0; k < n; k++) { int c = 0; while (c < n && !(st >> (k * n + c) & 1)) c++; if (c > 0) { int ns = st | 1 << (k * n + c - 1); if ((ns & ~target) == 0 && !seen[ns]) seen[ns] = 1, q.push_back(ns); } int r = 0; while (r < n && !(st >> (r * n + k) & 1)) r++; if (r > 0) { int ns = st | 1 << ((r - 1) * n + k); if ((ns & ~target) == 0 && !seen[ns]) seen[ns] = 1, q.push_back(ns); } } } cout << (ok ? "YES" : "NO") << "\n"; } }

@@ -1,0 +1,4 @@
+#include <bits/stdc++.h>
+using namespace std;
+int n, m; vector<int> cat, par; vector<vector<int>> adj;
+int main() { cin >> n >> m; cat.resize(n + 1); for (int i = 1; i <= n; i++) cin >> cat[i]; adj.resize(n + 1); for (int i = 0; i < n - 1; i++) { int a, b; cin >> a >> b; adj[a].push_back(b); adj[b].push_back(a); } par.assign(n + 1, 0); vector<int> q = {1}; par[1] = -1; for (size_t i = 0; i < q.size(); i++) for (int u : adj[q[i]]) if (u != par[q[i]]) par[u] = q[i], q.push_back(u); int cnt = 0; for (int v = 2; v <= n; v++) { if (adj[v].size() != 1) continue; vector<int> path; for (int x = v; x != -1; x = par[x]) path.push_back(x); int run = 0, worst = 0; for (int i = path.size() - 1; i >= 0; i--) { run = cat[path[i]] ? run + 1 : 0; worst = max(worst, run); } if (worst <= m) cnt++; } cout << cnt << "\n"; }
