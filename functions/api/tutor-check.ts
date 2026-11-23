@@ -1,6 +1,6 @@
 import type { Env } from '../_lib/env';
 import { json } from '../_lib/http';
-import { pickModels } from './tutor';
+import { pickModels, rememberGood } from './tutor';
 
 /**
  * Public health check for the tutor: is the Gemini key accepted, which model is
@@ -29,7 +29,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   out.picked = models;
 
   const tries: unknown[] = [];
-  for (const model of models.slice(0, 3)) {
+  let ok = false;
+  for (const model of models) {
     const res = await fetch(`${base}/v1beta/models/${model}:generateContent`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
@@ -46,9 +47,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
       reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
       finish: body.candidates?.[0]?.finishReason,
     });
-    if (res.ok) break;
+    if (res.ok) {
+      ok = true;
+      rememberGood(model);
+      break;
+    }
   }
   out.generate = tries;
-  cached = { at: Date.now(), body: out };
+  // Keep good results for 5 minutes, failures for only 30 seconds.
+  cached = { at: Date.now() - (ok ? 0 : 270_000), body: out };
   return json(out);
 };

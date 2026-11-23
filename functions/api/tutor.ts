@@ -4,7 +4,14 @@ import { getDb, type Sql } from '../_lib/db';
 import { error, json } from '../_lib/http';
 import { describeContext, systemPrompt, type TutorContext } from '../_lib/tutorContext';
 
-const FALLBACK_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash'];
+const FALLBACK_MODELS = ['gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3.5-flash-lite', 'gemini-2.5-flash-lite'];
+
+/** The model that answered last, tried first for the next 10 minutes. */
+let lastGood: { model: string; at: number } | null = null;
+
+export function rememberGood(model: string) {
+  lastGood = { model, at: Date.now() };
+}
 
 let modelCache: { at: number; models: string[] } | null = null;
 
@@ -20,7 +27,7 @@ function versionOf(name: string) {
  */
 export async function pickModels(env: Env, base: string): Promise<string[]> {
   if (env.GEMINI_MODEL) return [env.GEMINI_MODEL];
-  if (modelCache && Date.now() - modelCache.at < 3600_000) return modelCache.models;
+  if (modelCache && Date.now() - modelCache.at < 3600_000) return withLastGood(modelCache.models);
   try {
     const res = await fetch(`${base}/v1beta/models?pageSize=200`, { headers: { 'x-goog-api-key': env.GEMINI_API_KEY! } });
     if (res.ok) {
@@ -30,16 +37,24 @@ export async function pickModels(env: Env, base: string): Promise<string[]> {
         .map((m) => m.name.replace(/^models\//, ''))
         .filter((n) => /^gemini-[\d.]+-flash/.test(n) && !/(tts|image|audio|live|embedding|robotics|computer|thinking-exp)/.test(n));
       const score = (n: string) => versionOf(n) * 10 - (n.includes('lite') ? 3 : 0) - (/preview|exp/.test(n) ? 5 : 0);
-      const ranked = [...new Set(names)].sort((a, b) => score(b) - score(a)).slice(0, 4);
+      const sorted = [...new Set(names)].sort((a, b) => score(b) - score(a));
+      const full = sorted.filter((n) => !n.includes('lite') && !/preview|exp/.test(n)).slice(0, 5);
+      const lite = sorted.filter((n) => n.includes('lite') && !/preview|exp/.test(n)).slice(0, 2);
+      const ranked = [...full, ...lite];
       if (ranked.length) {
         modelCache = { at: Date.now(), models: ranked };
-        return ranked;
+        return withLastGood(ranked);
       }
     }
   } catch {
     /* fall through */
   }
-  return FALLBACK_MODELS;
+  return withLastGood(FALLBACK_MODELS);
+}
+
+function withLastGood(models: string[]) {
+  if (!lastGood || Date.now() - lastGood.at > 600_000) return models;
+  return [lastGood.model, ...models.filter((m) => m !== lastGood!.model)];
 }
 const MAX_TURNS = 12;
 const MAX_MSG = 4000;
@@ -150,6 +165,7 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
     });
     if (res.ok && res.body) {
       upstream = res;
+      rememberGood(model);
       break;
     }
     lastStatus = res.status;
@@ -157,8 +173,9 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
       .json()
       .then((d) => String((d as { error?: { message?: string } }).error?.message ?? ''))
       .catch(() => '');
-    // A model this key cannot use: try the next one. Anything else (bad key, quota): stop.
-    if (res.status !== 404 && !(res.status === 400 && /model/i.test(lastMessage))) break;
+    // Busy, rate-limited, retired or unknown model: try the next one. A bad key or bad request: stop.
+    const tryNext = [404, 429, 500, 503].includes(res.status) || (res.status === 400 && /model/i.test(lastMessage));
+    if (!tryNext) break;
   }
 
   if (!upstream?.body) {
