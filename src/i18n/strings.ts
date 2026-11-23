@@ -110,7 +110,8 @@ export const S = {
       example: { en: 'Worked example', bn: 'উদাহরণ' },
       mistakes: { en: 'Common mistakes', bn: 'সাধারণ ভুল' },
       plan: { en: 'How to practise', bn: 'কীভাবে অনুশীলন করবেন' },
-      explained: { en: 'Explained on CF Forge', bn: 'CF Forge-এ ব্যাখ্যা করা' },
+      explained: { en: 'Solved and explained', bn: 'সমাধান ও ব্যাখ্যাসহ' },
+      explainedGoal: { en: 'of 20 written', bn: '২০টির মধ্যে লেখা হয়েছে' },
       ladder: { en: 'Practice ladder', bn: 'অনুশীলনের সিঁড়ি' },
       ladderLede: {
         en: 'The most-solved problems with this tag in each rating band, from the Codeforces API. Climb from the top.',

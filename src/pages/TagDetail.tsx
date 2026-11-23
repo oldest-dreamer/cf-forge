@@ -151,6 +151,9 @@ export default function TagDetail() {
 
       {featured.length + rest.length > 0 && (
         <Section title={t(S.tags.guide.explained)}>
+          <p className="mb-4 text-sm text-slate">
+            <span className="font-semibold text-ember tabular-nums">{num(featured.length + rest.length)}</span> {t(S.tags.guide.explainedGoal)}
+          </p>
           <ul className="border-t border-seam/70">
             {featured.map((p) => (
               <ProblemRow key={p.id} p={p} featured />
