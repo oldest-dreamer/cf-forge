@@ -28,31 +28,34 @@ export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const models = await pickModels(env, base);
   out.picked = models;
 
-  const tries: unknown[] = [];
-  let ok = false;
-  for (const model of models) {
-    const res = await fetch(`${base}/v1beta/models/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 20 } }),
-    });
-    const body = (await res.json().catch(() => ({}))) as {
-      error?: { message?: string; status?: string };
-      candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[];
-    };
-    tries.push({
-      model,
-      status: res.status,
-      error: body.error ? `${body.error.status ?? ''} ${body.error.message ?? ''}`.trim() : undefined,
-      reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
-      finish: body.candidates?.[0]?.finishReason,
-    });
-    if (res.ok) {
-      ok = true;
-      rememberGood(model);
-      break;
-    }
-  }
+  // Probe every candidate at once, each with a 12 s limit.
+  const tries = await Promise.all(
+    models.map(async (model) => {
+      try {
+        const res = await fetch(`${base}/v1beta/models/${model}:generateContent`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 20 } }),
+          signal: AbortSignal.timeout(12_000),
+        });
+        const body = (await res.json().catch(() => ({}))) as {
+          error?: { message?: string; status?: string };
+          candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[];
+        };
+        return {
+          model,
+          status: res.status,
+          error: body.error ? `${body.error.status ?? ''} ${body.error.message ?? ''}`.trim().slice(0, 160) : undefined,
+          reply: body.candidates?.[0]?.content?.parts?.map((p) => p.text).join('')?.slice(0, 40),
+        };
+      } catch {
+        return { model, status: 0, error: 'timed out after 12 s' };
+      }
+    }),
+  );
+  const firstOk = tries.find((x) => x.status === 200);
+  const ok = Boolean(firstOk);
+  if (firstOk) rememberGood(firstOk.model);
   out.generate = tries;
   // Keep good results for 5 minutes, failures for only 30 seconds.
   cached = { at: Date.now() - (ok ? 0 : 270_000), body: out };

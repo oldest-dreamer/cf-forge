@@ -158,11 +158,24 @@ const handlePost: PagesFunction<Env> = async ({ request, env }) => {
   let tried = '';
   for (const model of models) {
     tried = model;
-    const res = await fetch(`${base}/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-      body: JSON.stringify(payload),
-    });
+    // Give each model 10 s to start answering; the timer stops once headers arrive.
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 10_000);
+    let res: Response;
+    try {
+      res = await fetch(`${base}/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+        body: JSON.stringify(payload),
+        signal: ac.signal,
+      });
+    } catch {
+      lastStatus = 504;
+      lastMessage = 'timed out';
+      continue;
+    } finally {
+      clearTimeout(timer);
+    }
     if (res.ok && res.body) {
       upstream = res;
       rememberGood(model);
