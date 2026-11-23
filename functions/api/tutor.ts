@@ -4,7 +4,43 @@ import { getDb, type Sql } from '../_lib/db';
 import { error, json } from '../_lib/http';
 import { describeContext, systemPrompt, type TutorContext } from '../_lib/tutorContext';
 
-const MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite'];
+const FALLBACK_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash'];
+
+let modelCache: { at: number; models: string[] } | null = null;
+
+/** Parse "gemini-3.8-flash" -> 3.8 so newer models sort first. */
+function versionOf(name: string) {
+  const m = /gemini-(\d+(?:\.\d+)?)/.exec(name);
+  return m ? Number(m[1]) : 0;
+}
+
+/**
+ * Ask Google which models this key can use, and prefer the newest stable Flash model.
+ * Cached for an hour per worker. Falls back to a fixed list if listing fails.
+ */
+async function pickModels(env: Env, base: string): Promise<string[]> {
+  if (env.GEMINI_MODEL) return [env.GEMINI_MODEL];
+  if (modelCache && Date.now() - modelCache.at < 3600_000) return modelCache.models;
+  try {
+    const res = await fetch(`${base}/v1beta/models?pageSize=200`, { headers: { 'x-goog-api-key': env.GEMINI_API_KEY! } });
+    if (res.ok) {
+      const data = (await res.json()) as { models?: { name: string; supportedGenerationMethods?: string[] }[] };
+      const names = (data.models ?? [])
+        .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
+        .map((m) => m.name.replace(/^models\//, ''))
+        .filter((n) => /^gemini-[\d.]+-flash/.test(n) && !/(tts|image|audio|live|embedding|robotics|computer|thinking-exp)/.test(n));
+      const score = (n: string) => versionOf(n) * 10 - (n.includes('lite') ? 3 : 0) - (/preview|exp/.test(n) ? 5 : 0);
+      const ranked = [...new Set(names)].sort((a, b) => score(b) - score(a)).slice(0, 4);
+      if (ranked.length) {
+        modelCache = { at: Date.now(), models: ranked };
+        return ranked;
+      }
+    }
+  } catch {
+    /* fall through */
+  }
+  return FALLBACK_MODELS;
+}
 const MAX_TURNS = 12;
 const MAX_MSG = 4000;
 const MAX_CODE = 12000;
@@ -40,8 +76,16 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   return json({ enabled: Boolean(env.GEMINI_API_KEY), limit, used, remaining: Math.max(0, limit - used), resetsIn: resetsIn() });
 };
 
-/** Ask the tutor. Streams plain text back. */
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+/** Ask the tutor. Streams plain text back. Unexpected crashes come back as readable JSON. */
+export const onRequestPost: PagesFunction<Env> = async (ctx) => {
+  try {
+    return await handlePost(ctx);
+  } catch (e) {
+    return json({ error: { code: 'UPSTREAM', message: 'The tutor crashed.', detail: String((e as Error)?.message ?? e).slice(0, 300) } }, { status: 500 });
+  }
+};
+
+const handlePost: PagesFunction<Env> = async ({ request, env }) => {
   const user = await requireUser(request, env);
   if (user instanceof Response) return user;
   if (!env.GEMINI_API_KEY) return error(503, 'TUTOR_OFF', 'The tutor is not connected yet.');
@@ -92,10 +136,13 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   };
 
   const base = (env.GEMINI_BASE || 'https://generativelanguage.googleapis.com').replace(/\/$/, '');
-  const models = env.GEMINI_MODEL ? [env.GEMINI_MODEL] : MODELS;
+  const models = await pickModels(env, base);
   let upstream: Response | null = null;
   let lastStatus = 0;
+  let lastMessage = '';
+  let tried = '';
   for (const model of models) {
+    tried = model;
     const res = await fetch(`${base}/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
@@ -106,14 +153,27 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       break;
     }
     lastStatus = res.status;
-    // Unknown or retired model: try the next one. Anything else: stop.
-    if (res.status !== 404 && res.status !== 400) break;
+    lastMessage = await res
+      .json()
+      .then((d) => String((d as { error?: { message?: string } }).error?.message ?? ''))
+      .catch(() => '');
+    // A model this key cannot use: try the next one. Anything else (bad key, quota): stop.
+    if (res.status !== 404 && !(res.status === 400 && /model/i.test(lastMessage))) break;
   }
 
   if (!upstream?.body) {
     await refund();
     const code = lastStatus === 429 ? 'BUSY' : 'UPSTREAM';
-    return error(lastStatus === 429 ? 503 : 502, code, 'The tutor could not answer right now.');
+    return json(
+      {
+        error: {
+          code,
+          message: 'The tutor could not answer right now.',
+          detail: `Gemini ${lastStatus} (${tried}): ${lastMessage.slice(0, 300)}`,
+        },
+      },
+      { status: lastStatus === 429 ? 503 : 502 },
+    );
   }
 
   // Turn Gemini's server-sent events into a plain text stream for the browser.

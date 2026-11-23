@@ -63,6 +63,7 @@ export class TutorError extends Error {
   constructor(
     public code: string,
     public resetsIn?: number,
+    public detail?: string,
   ) {
     super(code);
   }
@@ -88,8 +89,8 @@ export async function streamAnswer(
     throw new TutorError('NETWORK');
   }
   if (!res.ok || !res.body) {
-    const data = (await res.json().catch(() => ({}))) as { error?: { code?: string }; resetsIn?: number };
-    throw new TutorError(data.error?.code ?? 'UPSTREAM', data.resetsIn);
+    const data = (await res.json().catch(() => ({}))) as { error?: { code?: string; detail?: string }; resetsIn?: number };
+    throw new TutorError(data.error?.code ?? 'UPSTREAM', data.resetsIn, data.error?.detail ?? (res.ok ? undefined : `HTTP ${res.status}`));
   }
   const reader = res.body.getReader();
   const dec = new TextDecoder();

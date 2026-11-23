@@ -8,7 +8,7 @@ import type { L } from '@/i18n/types';
 import { Markdown } from './Markdown';
 import { cn } from '@/lib/cn';
 
-type Msg = { role: 'user' | 'model'; text: string; code?: string; error?: L };
+type Msg = { role: 'user' | 'model'; text: string; code?: string; error?: L; detail?: string };
 
 const storeKey = (c: TutorContext) => `cf-forge:tutor:${JSON.stringify(c)}`;
 
@@ -166,7 +166,7 @@ export function TutorPanel() {
             err.code === 'LIMIT' && err.resetsIn
               ? { en: `${base.en} ${fmtWait(err.resetsIn, (l) => l.en, String)}.`, bn: `${base.bn} ${fmtWait(err.resetsIn, (l) => l.bn, (n) => new Intl.NumberFormat('bn-BD').format(n))} পরে।` }
               : base;
-          setMsgs((old) => [...old.slice(0, -1), { role: 'model', text: '', error: msg }]);
+          setMsgs((old) => [...old.slice(0, -1), { role: 'model', text: '', error: msg, detail: err.detail }]);
           if (err.code === 'LIMIT') setUsage((u) => (u ? { ...u, remaining: 0 } : u));
         }
       } finally {
@@ -286,6 +286,7 @@ export function TutorPanel() {
                       ) : m.error ? (
                         <p className="rounded-xl border border-[#ff7b72]/35 bg-[#ff7b72]/8 px-3.5 py-2.5 text-sm text-[#ffb4ab]" role="alert">
                           {t(m.error)}
+                          {m.detail && <span className="mt-1.5 block break-words font-mono text-xs text-slate">{m.detail}</span>}
                         </p>
                       ) : (
                         <div className="text-[0.95rem] leading-relaxed text-ash/90">
