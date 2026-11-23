@@ -14,6 +14,8 @@ const TagDetail = lazy(() => import('@/pages/TagDetail'));
 const Problems = lazy(() => import('@/pages/Problems'));
 const Problem = lazy(() => import('@/pages/Problem'));
 const Learn = lazy(() => import('@/pages/Learn'));
+const LessonPage = lazy(() => import('@/pages/Lesson'));
+const Toolkit = lazy(() => import('@/pages/Toolkit'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const Playground = lazy(() => import('@/pages/Playground'));
 
@@ -43,6 +45,8 @@ const router = createBrowserRouter([
       { path: '/problems', element: wrap(<Problems />) },
       { path: '/problems/:id', element: wrap(<Problem />) },
       { path: '/learn', element: wrap(<Learn />) },
+      { path: '/learn/:id', element: wrap(<LessonPage />) },
+      { path: '/toolkit', element: wrap(<Toolkit />) },
       { path: '/profile', element: wrap(<Profile />) },
       { path: '/run', element: wrap(<Playground />) },
       { path: '*', element: <NotFound /> },

@@ -17,6 +17,13 @@ async function ensureSchema(sql: Sql) {
       created_at   timestamptz NOT NULL DEFAULT now(),
       updated_at   timestamptz NOT NULL DEFAULT now()
     )`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS cf_lesson_progress (
+      user_id      text NOT NULL,
+      lesson_id    text NOT NULL,
+      completed_at timestamptz NOT NULL DEFAULT now(),
+      PRIMARY KEY (user_id, lesson_id)
+    )`;
 }
 
 /** A query function with the schema guaranteed, or a 503 Response if the DB is not connected. */

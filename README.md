@@ -43,7 +43,7 @@ src/
 | 3 | Login (email + password, Continue with Google), login required, profile API ✅ | Neon project + Neon Auth, `DATABASE_URL` secret |
 | 4 | Live Codeforces dashboard (user's own handle), solved marks, real verdicts ✅ | — |
 | 5 | In-browser C++ compiler (Clang → WebAssembly): Run tests, edit code, custom input, Code runner page ✅ | — |
-| 6 | C++ from zero course + STL toolkit | — |
+| 6 | C++ from zero course (12 lessons, runnable examples, auto-checked exercises, saved progress) + STL toolkit (41 entries) ✅ | — |
 | 7 | Gemini AI tutor on every page, per-user daily limit | Gemini API key from Google AI Studio |
 | 8+ | Problem waves toward ~1000 explained problems | — |
 
@@ -75,6 +75,7 @@ A run that passes its time limit is stopped by terminating the runner worker. `<
 | `GET /api/health` | API up? Database connected? |
 | `GET /api/me` | The signed-in user, as the backend sees them |
 | `GET/PUT /api/profile` | Display name, Codeforces handle, site language (table `cf_profiles`, created automatically) |
+| `GET/PUT /api/progress` | Finished lessons (table `cf_lesson_progress`, created automatically) |
 
 | Variable | Where | Secret? |
 | --- | --- | --- |

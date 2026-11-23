@@ -61,7 +61,7 @@ function Io({ label, text, tone }: { label: string; text: string; tone?: 'bad' }
   );
 }
 
-function ResultRow({ i, tc, r, running }: { i: number; tc: { input: string; output?: string }; r: TestOutcome | null; running: boolean }) {
+export function ResultRow({ i, tc, r, running }: { i: number; tc: { input: string; output?: string }; r: TestOutcome | null; running: boolean }) {
   const { t, num } = useI18n();
   const [open, setOpen] = useState(false);
   const failed = r && r.verdict !== 'passed' && r.verdict !== 'ran';

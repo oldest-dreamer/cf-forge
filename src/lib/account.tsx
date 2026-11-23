@@ -22,9 +22,14 @@ type AccountCtx = {
   refreshCf: () => Promise<void>;
   /** Merge freshly fetched submissions (e.g. from a verdict check). */
   mergeSubmissions: (subs: CfSubmission[]) => void;
+
+  /** Lessons the user has finished. */
+  lessonsDone: Set<string>;
+  markLessonDone: (id: string) => void;
 };
 
 const Ctx = createContext<AccountCtx | null>(null);
+const LESSONS_KEY = 'cf-forge:lessons';
 
 export function AccountProvider({ children }: { children: ReactNode }) {
   const { lang, setLang } = useI18n();
@@ -34,6 +39,13 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [submissions, setSubmissions] = useState<CfSubmission[] | null>(null);
   const [cfStatus, setCfStatus] = useState<Status>('idle');
   const [cfError, setCfError] = useState<CfError | null>(null);
+  const [lessonsDone, setLessonsDone] = useState<Set<string>>(() => {
+    try {
+      return new Set(JSON.parse(localStorage.getItem(LESSONS_KEY) ?? '[]') as string[]);
+    } catch {
+      return new Set();
+    }
+  });
   const langApplied = useRef(false);
   const langRef = useRef(lang);
   langRef.current = lang;
@@ -54,6 +66,26 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       alive = false;
     };
   }, [setLang]);
+
+  // Lesson progress lives in the database; localStorage keeps it if the API is unreachable.
+  useEffect(() => {
+    api<{ completed: string[] }>('/api/progress')
+      .then(({ completed }) => setLessonsDone((old) => new Set([...old, ...completed])))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LESSONS_KEY, JSON.stringify([...lessonsDone]));
+    } catch {
+      /* ignore */
+    }
+  }, [lessonsDone]);
+
+  const markLessonDone = useCallback((id: string) => {
+    setLessonsDone((old) => (old.has(id) ? old : new Set([...old, id])));
+    api('/api/progress', { method: 'PUT', body: JSON.stringify({ lessonId: id }) }).catch(() => {});
+  }, []);
 
   const handle = profile?.cfHandle ?? null;
 
@@ -120,8 +152,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       attempted,
       refreshCf,
       mergeSubmissions,
+      lessonsDone,
+      markLessonDone,
     }),
-    [profile, profileStatus, handle, cfUser, submissions, cfStatus, cfError, solved, attempted, refreshCf, mergeSubmissions],
+    [profile, profileStatus, handle, cfUser, submissions, cfStatus, cfError, solved, attempted, refreshCf, mergeSubmissions, lessonsDone, markLessonDone],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

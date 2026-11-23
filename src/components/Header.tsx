@@ -9,6 +9,7 @@ import { Logo } from './Logo';
 import { LangToggle } from './LangToggle';
 import { UserMenu } from './UserMenu';
 import { RUN } from '@/i18n/runStrings';
+import { COURSE } from '@/i18n/courseStrings';
 
 const LINKS = [
   { to: '/contests', label: S.nav.contests },
@@ -16,6 +17,7 @@ const LINKS = [
   { to: '/problems', label: S.nav.problems },
   { to: '/run', label: RUN.playground.nav },
   { to: '/learn', label: S.nav.learn },
+  { to: '/toolkit', label: COURSE.toolkit.nav },
 ];
 
 export function Header() {
@@ -33,7 +35,7 @@ export function Header() {
           {t(S.brand)}
         </Link>
 
-        <nav className="ml-4 hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="Main">
           {LINKS.map((l) => (
             <NavLink
               key={l.to}
@@ -66,7 +68,7 @@ export function Header() {
           <UserMenu />
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-lg text-slate hover:bg-iron hover:text-ash md:hidden"
+            className="grid size-10 place-items-center rounded-lg text-slate hover:bg-iron hover:text-ash lg:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-label={t(open ? S.close : S.menu)}
@@ -84,7 +86,7 @@ export function Header() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-seam/60 md:hidden"
+            className="overflow-hidden border-t border-seam/60 lg:hidden"
             aria-label="Main"
           >
             <ul className="mx-auto flex max-w-6xl flex-col px-5 py-3">

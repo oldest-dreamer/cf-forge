@@ -347,7 +347,7 @@ export default function Problem() {
               {p.toolkit.map((a) => (
                 <Link
                   key={a}
-                  to={`/learn#${a}`}
+                  to={`/toolkit#${a}`}
                   className="rounded-full bg-iron px-3 py-1 font-mono text-sm text-ash/85 ring-1 ring-seam transition-colors hover:text-ember hover:ring-ember/50"
                 >
                   {a}
