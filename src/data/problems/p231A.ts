@@ -82,6 +82,12 @@ export const p231A: ProblemEntry = {
         en: 'Add the three values and count the line when the sum is at least 2.',
         bn: 'তিনটি মান যোগ করে যোগফল কমপক্ষে ২ হলে লাইনটি গুনুন।',
       },
+      explain: [
+        {
+          en: "Each opinion is 0 or 1, so the number of sure friends is just a + b + c. The team writes a solution when that sum is at least 2.",
+          bn: "প্রতিটি মত ০ বা ১, তাই নিশ্চিত বন্ধুর সংখ্যা শুধু a + b + c। যোগফল কমপক্ষে ২ হলে দল সমাধান লেখে।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -113,6 +119,12 @@ int main() {
         en: 'A comparison is a bool, and a bool adds as 0 or 1, so the counter can grow by (a + b + c >= 2) directly.',
         bn: 'তুলনার ফল bool, আর bool যোগ হয় ০ বা ১ হিসেবে, তাই কাউন্টারে সরাসরি (a + b + c >= ২) যোগ করা যায়।',
       },
+      explain: [
+        {
+          en: "A comparison gives a bool, and adding a bool to an int adds 0 or 1. So solved += (a + b + c >= 2) counts without an if. The two fast-I/O lines are habit; with n ≤ 1000 they are not needed here.",
+          bn: "তুলনা একটি bool দেয়, আর int-এ bool যোগ করলে ০ বা ১ যোগ হয়। তাই solved += (a + b + c >= 2) কোনো if ছাড়াই গোনে। দ্রুত I/O-র দুই লাইন অভ্যাস; n ≤ ১০০০ হওয়ায় এখানে দরকার নেই।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 

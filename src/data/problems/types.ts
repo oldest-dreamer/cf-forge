@@ -37,8 +37,13 @@ export type Solution = {
   id: string;
   kind: SolutionKind;
   title: L;
-  /** Why this solution works, in a few sentences. */
+  /** The idea in one or two sentences (shown above the code). */
   idea: L;
+  /**
+   * The full explanation of this method: how to think of it, why it is correct,
+   * and how it runs on an example. One entry per paragraph.
+   */
+  explain?: L[];
   /** Complete C++ that compiles with GNU G++20 and passes on Codeforces. */
   code: string;
   time: string;

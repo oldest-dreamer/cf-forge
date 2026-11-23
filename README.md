@@ -28,6 +28,21 @@ src/
       index.ts       the problem pool
 ```
 
+### Verifying content
+
+Every problem is checked before it ships:
+
+```bash
+node --experimental-strip-types tools/verify.mjs 300        # all problems, 300 random tests each
+node --experimental-strip-types tools/verify.mjs 300 266A   # one problem
+```
+
+It compiles every solution with `g++ -std=gnu++20 -O2`, runs it on all samples and tests, then
+stress-tests: `tools/stress/<ID>.gen.cpp` makes random inputs and every solution must agree with an
+independent reference (`tools/stress/<ID>.brute.cpp` or the problem's own brute force).
+
+`tools/build-ladders.py` rebuilds the 36 practice ladders from the Codeforces API (`problemset.problems`).
+
 ### Adding a problem
 
 1. Create `src/data/problems/p<ID>.ts` exporting a `ProblemEntry`.

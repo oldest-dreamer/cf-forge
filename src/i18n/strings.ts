@@ -103,6 +103,25 @@ export const S = {
       bn: 'এই ট্যাগের প্রবলেম আসছে পরের প্রবলেম ধাপগুলোতে।',
     },
     openOnCf: { en: 'Open this tag on Codeforces', bn: 'কোডফোর্সেসে এই ট্যাগ খুলুন' },
+    guide: {
+      what: { en: 'What it is', bn: 'এটি কী' },
+      recognize: { en: 'How to recognise it', bn: 'কীভাবে চিনবেন' },
+      patterns: { en: 'Core patterns', bn: 'মূল প্যাটার্ন' },
+      example: { en: 'Worked example', bn: 'উদাহরণ' },
+      mistakes: { en: 'Common mistakes', bn: 'সাধারণ ভুল' },
+      plan: { en: 'How to practise', bn: 'কীভাবে অনুশীলন করবেন' },
+      explained: { en: 'Explained on CF Forge', bn: 'CF Forge-এ ব্যাখ্যা করা' },
+      ladder: { en: 'Practice ladder', bn: 'অনুশীলনের সিঁড়ি' },
+      ladderLede: {
+        en: 'The most-solved problems with this tag in each rating band, from the Codeforces API. Climb from the top.',
+        bn: 'প্রতিটি রেটিং ধাপে এই ট্যাগের সবচেয়ে বেশি সমাধান হওয়া প্রবলেম, কোডফোর্সেস API থেকে। ওপর থেকে উঠতে থাকুন।',
+      },
+      solvedBy: { en: 'solved', bn: 'জন সমাধান করেছে' },
+      comingSoon: {
+        en: 'A full guide for this tag is coming in a later wave. Start with the signals and the ladder below.',
+        bn: 'এই ট্যাগের পূর্ণ গাইড পরের ধাপে আসছে। আপাতত নিচের লক্ষণ আর সিঁড়ি দিয়ে শুরু করুন।',
+      },
+    },
     back: { en: 'All tags', bn: 'সব ট্যাগ' },
     groups: {
       core: { en: 'Core', bn: 'মৌলিক' },
@@ -165,6 +184,7 @@ export const S = {
       alt: { en: 'Alternative style', bn: 'ভিন্ন ধরন' },
     },
     toolkit: { en: 'C++ toolkit used here', bn: 'এখানে ব্যবহৃত C++ টুলকিট' },
+    howItWorks: { en: 'How it works', bn: 'কীভাবে কাজ করে' },
     related: { en: 'Try next', bn: 'এরপর চেষ্টা করুন' },
     notFound: { en: 'That problem is not in CF Forge yet.', bn: 'এই প্রবলেমটি এখনও CF Forge-এ নেই।' },
   },

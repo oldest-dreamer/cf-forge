@@ -78,6 +78,12 @@ export const p71A: ProblemEntry = {
         en: 'Use the string’s own front(), back() and size() and let cout print the number.',
         bn: 'স্ট্রিংয়ের নিজস্ব front(), back() আর size() ব্যবহার করুন, সংখ্যাটি cout প্রিন্ট করবে।',
       },
+      explain: [
+        {
+          en: "cout prints a char, then a number, then a char, so s.front() << s.size() − 2 << s.back() builds the short form directly on the output. Words of length 10 or less are printed unchanged.",
+          bn: "cout একটি char, তারপর একটি সংখ্যা, তারপর একটি char প্রিন্ট করে, তাই s.front() << s.size() − 2 << s.back() সরাসরি আউটপুটেই ছোট রূপ তৈরি করে। ১০ বা কম দৈর্ঘ্যের শব্দ অপরিবর্তিত প্রিন্ট হয়।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -109,6 +115,12 @@ int main() {
         en: 'Build the new word as a string first. Handy when you need to store or compare the result instead of printing it.',
         bn: 'আগে নতুন শব্দটি স্ট্রিং হিসেবে বানান। ফল প্রিন্ট না করে রাখতে বা তুলনা করতে হলে কাজে লাগে।',
       },
+      explain: [
+        {
+          en: "Building the result as a string with to_string makes the function reusable: you can return it, compare it or store it. string + char and char + string both work in C++; char + char does not.",
+          bn: "to_string দিয়ে ফল স্ট্রিং হিসেবে বানালে ফাংশনটি বারবার ব্যবহার করা যায়: ফেরত দেওয়া, তুলনা বা জমা রাখা যায়। C++-এ string + char আর char + string দুটোই চলে; char + char চলে না।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 

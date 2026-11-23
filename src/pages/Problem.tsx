@@ -123,7 +123,15 @@ function Solutions({ p }: { p: ProblemEntry }) {
           transition={{ duration: 0.2 }}
           className="mt-5"
         >
-          <p className="prose-forge text-ash/85">{t(s.idea)}</p>
+          <p className="prose-forge text-lg text-ash/90">{t(s.idea)}</p>
+          {s.explain && s.explain.length > 0 && (
+            <div className="prose-forge mt-4 rounded-xl border border-seam/70 bg-iron/40 p-4 text-ash/85">
+              <p className="mb-2 text-sm font-medium text-slate">{t(S.problem.howItWorks)}</p>
+              {s.explain.map((para, i) => (
+                <p key={i}>{t(para)}</p>
+              ))}
+            </div>
+          )}
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate">
             <span>
               {t(S.problem.time)} <code className="inline-code">{s.time}</code>

@@ -85,6 +85,12 @@ export const p4A: ProblemEntry = {
         en: 'Loop the first piece a over 1…w−1. If both a and w − a are even for some a, the answer is YES.',
         bn: 'প্রথম টুকরো a-কে ১…w−১ পর্যন্ত লুপ করুন। কোনো a-র জন্য a ও w − a দুটোই জোড় হলে উত্তর YES।',
       },
+      explain: [
+        {
+          en: "A split is two pieces a and w − a with 1 ≤ a ≤ w − 1. Trying every a and testing both parts for evenness is the definition itself, so it cannot be wrong; with w ≤ 100 it runs at most 99 times.",
+          bn: "একটি ভাগ হলো দুটি টুকরো a আর w − a, যেখানে ১ ≤ a ≤ w − ১। প্রতিটি a চেষ্টা করে দুই অংশ জোড় কি না দেখা সংজ্ঞাটাই, তাই ভুল হতে পারে না; w ≤ ১০০ হওয়ায় সর্বোচ্চ ৯৯ বার চলে।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -115,6 +121,12 @@ int main() {
         en: 'The first piece has to be even anyway, so step a by 2 starting at 2, and stop as soon as a split works.',
         bn: 'প্রথম টুকরো তো জোড় হতেই হবে, তাই a-কে ২ থেকে শুরু করে ২ করে বাড়ান, আর প্রথম সঠিক ভাগ পেলেই থামুন।',
       },
+      explain: [
+        {
+          en: "Odd first pieces can never work, so step a by 2 from 2. The last possible piece is w − 2, leaving 2 for the other side. Breaking at the first success saves the rest of the loop.",
+          bn: "বিজোড় প্রথম টুকরো কখনো কাজ করে না, তাই a-কে ২ থেকে ২ করে বাড়ান। সম্ভাব্য শেষ টুকরো w − ২, অন্য পাশে ২ রেখে। প্রথম সফলতায় break করলে বাকি লুপ বাঁচে।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -147,6 +159,12 @@ int main() {
         en: 'A valid split exists exactly when w is even and w > 2, because 2 + (w − 2) then works.',
         bn: 'সঠিক ভাগ ঠিক তখনই আছে যখন w জোড় আর w > ২, কারণ তখন ২ + (w − ২) কাজ করে।',
       },
+      explain: [
+        {
+          en: "If any split a + (w − a) works, then w = even + even is even. Conversely, if w is even and at least 4, the split 2 + (w − 2) works. So the loop collapses to one test: w % 2 == 0 && w > 2.",
+          bn: "কোনো ভাগ a + (w − a) কাজ করলে w = জোড় + জোড়, অর্থাৎ জোড়। উল্টোভাবে, w জোড় আর কমপক্ষে ৪ হলে ভাগ ২ + (w − ২) কাজ করে। তাই লুপটি একটি পরীক্ষায় নেমে আসে: w % 2 == 0 && w > 2।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -170,6 +188,12 @@ int main() {
         en: 'The same search as the brute force, written as “does any a in 1…w−1 give two even pieces?” with C++20 ranges.',
         bn: 'ব্রুট ফোর্সের একই খোঁজ, C++20 ranges দিয়ে লেখা: “১…w−১-এর কোনো a কি দুটি জোড় টুকরো দেয়?”',
       },
+      explain: [
+        {
+          en: "views::iota(1, w) is the lazy range 1, 2, …, w − 1, and ranges::any_of asks whether the lambda is true for any of them. It is the brute force written as a sentence: “is there an a that works?”.",
+          bn: "views::iota(1, w) হলো অলস পরিসর ১, ২, …, w − ১, আর ranges::any_of জিজ্ঞেস করে ল্যাম্বডা এদের কোনোটির জন্য সত্য কি না। এটি ব্রুট ফোর্সকে একটি বাক্যে লেখা: “এমন কোনো a আছে কি যা কাজ করে?”",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -198,6 +222,12 @@ int main() {
         en: 'A number is even when its lowest bit is 0, so (w & 1) == 0 replaces w % 2 == 0. C-style I/O, same logic.',
         bn: 'সবচেয়ে নিচের বিট ০ হলে সংখ্যা জোড়, তাই w % 2 == 0-এর জায়গায় (w & 1) == 0। C-স্টাইলের I/O, যুক্তি একই।',
       },
+      explain: [
+        {
+          en: "The lowest bit of a number is 1 exactly when it is odd, so (w & 1) == 0 tests evenness without a division. puts prints a string followed by a newline, and scanf/printf-style I/O is handy when you meet older solutions.",
+          bn: "সংখ্যার সবচেয়ে নিচের বিট ১ হয় ঠিক তখনই যখন তা বিজোড়, তাই (w & 1) == 0 ভাগ ছাড়াই জোড় কি না দেখে। puts একটি স্ট্রিং আর নতুন লাইন প্রিন্ট করে, আর পুরোনো সমাধান পড়তে scanf/printf ধাঁচের I/O কাজে লাগে।",
+        },
+      ],
       code: `#include <cstdio>
 
 int main() {

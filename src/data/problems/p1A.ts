@@ -75,6 +75,16 @@ export const p1A: ProblemEntry = {
         en: 'Round each side up with (x + a − 1) / a and multiply in 64-bit.',
         bn: 'প্রতিটি বাহু (x + a − ১) / a দিয়ে ওপরে রাউন্ড করে ৬৪-বিটে গুণ করুন।',
       },
+      explain: [
+        {
+          en: "Along one side of length n you need the smallest count c with c · a ≥ n, which is ⌈n / a⌉ = (n + a − 1) / a. The other side is independent, so the grid of stones has ⌈n / a⌉ × ⌈m / a⌉ cells.",
+          bn: "n দৈর্ঘ্যের এক বাহু বরাবর এমন সবচেয়ে ছোট c লাগে যাতে c · a ≥ n, অর্থাৎ ⌈n / a⌉ = (n + a − 1) / a। অন্য বাহু স্বাধীন, তাই পাথরের গ্রিডে ⌈n / a⌉ × ⌈m / a⌉-টি ঘর।",
+        },
+        {
+          en: "Both factors can be 10⁹, so the product needs 64 bits. Declaring n, m, a as long long makes every step 64-bit, which is the simplest way to be safe.",
+          bn: "দুটি গুণকই ১০⁹ হতে পারে, তাই গুণফলে ৬৪ বিট লাগে। n, m, a-কে long long ঘোষণা করলে প্রতিটি ধাপ ৬৪-বিটে হয়, নিরাপদ থাকার সবচেয়ে সহজ উপায়।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
@@ -102,6 +112,12 @@ int main() {
         en: 'x / a full stones, plus one more if x % a is not zero. Same result, written the way you would think it.',
         bn: 'x / a-টি পুরো পাথর, আর x % a শূন্য না হলে আরও একটি। একই ফল, যেভাবে ভাবেন সেভাবে লেখা।',
       },
+      explain: [
+        {
+          en: "x / a counts the stones that fit completely; if something is left (x % a ≠ 0) one more stone sticks out past the edge. This is the same ceiling, written the way you would explain it aloud.",
+          bn: "x / a গোনে কতগুলো পাথর পুরোপুরি আঁটে; কিছু বাকি থাকলে (x % a ≠ ০) আরও একটি পাথর প্রান্ত ছাড়িয়ে বেরিয়ে থাকে। এটি একই সিলিং, মুখে যেভাবে বোঝাতেন সেভাবে লেখা।",
+        },
+      ],
       code: `#include <bits/stdc++.h>
 using namespace std;
 
