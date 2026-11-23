@@ -8,11 +8,13 @@ import { cn } from '@/lib/cn';
 import { Logo } from './Logo';
 import { LangToggle } from './LangToggle';
 import { UserMenu } from './UserMenu';
+import { RUN } from '@/i18n/runStrings';
 
 const LINKS = [
   { to: '/contests', label: S.nav.contests },
   { to: '/tags', label: S.nav.tags },
   { to: '/problems', label: S.nav.problems },
+  { to: '/run', label: RUN.playground.nav },
   { to: '/learn', label: S.nav.learn },
 ];
 

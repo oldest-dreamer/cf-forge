@@ -1,14 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { CheckCircle2, ExternalLink, Play } from 'lucide-react';
+import { CheckCircle2, ExternalLink } from 'lucide-react';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
 import { PROBLEM_BY_ID } from '@/data/problems';
 import { PROBLEM_PARTS, cfProblemUrl, type ProblemEntry, type ProblemPart } from '@/data/problems/types';
 import { TAG_BY_SLUG } from '@/data/tags/tags';
 import { RatingPill } from '@/components/RatingPill';
-import { CodeBlock, IoBlock } from '@/components/CodeBlock';
+import { IoBlock } from '@/components/CodeBlock';
+import { RunPanel } from '@/components/RunPanel';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
 import { ProblemStatusBadge, ProblemTracker } from '@/components/ProblemTracker';
@@ -135,16 +136,8 @@ function Solutions({ p }: { p: ProblemEntry }) {
               </span>
             )}
           </div>
-          <CodeBlock code={s.code} className="mt-4" />
-          <div className="mt-3 flex items-center gap-2 text-sm text-slate">
-            <button
-              type="button"
-              disabled
-              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-seam px-3 py-1.5 opacity-60"
-            >
-              <Play size={14} /> Run
-            </button>
-            <span>{t(S.problem.runSoon)}</span>
+          <div className="mt-4">
+            <RunPanel key={s.id} code={s.code} tests={p.tests} timeLimitSec={p.limits.timeSec} />
           </div>
         </motion.div>
       </AnimatePresence>

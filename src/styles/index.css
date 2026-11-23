@@ -68,6 +68,12 @@
   }
   code,
   pre,
+  kbd,
+  textarea {
+    font-variant-ligatures: none;
+  }
+  code,
+  pre,
   kbd {
     font-family: var(--font-mono);
   }

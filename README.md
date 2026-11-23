@@ -42,10 +42,19 @@ src/
 | 2 | Deploy on Cloudflare Pages ✅ | Connect this repo in Cloudflare Pages |
 | 3 | Login (email + password, Continue with Google), login required, profile API ✅ | Neon project + Neon Auth, `DATABASE_URL` secret |
 | 4 | Live Codeforces dashboard (user's own handle), solved marks, real verdicts ✅ | — |
-| 5 | In-browser C++ compiler (WebAssembly) for Run | — |
+| 5 | In-browser C++ compiler (Clang → WebAssembly): Run tests, edit code, custom input, Code runner page ✅ | — |
 | 6 | C++ from zero course + STL toolkit | — |
 | 7 | Gemini AI tutor on every page, per-user daily limit | Gemini API key from Google AI Studio |
 | 8+ | Problem waves toward ~1000 explained problems | — |
+
+## In-browser C++ compiler
+
+`npm run build` also runs `scripts/prepare-clang.mjs`, which packs [`@yowasp/clang`](https://www.npmjs.com/package/@yowasp/clang)
+(Clang/LLD compiled to WebAssembly) into `dist/clang/<version>/` as gzip parts ≤ 20 MiB (Cloudflare's per-file limit is 25 MiB).
+`src/compiler/compiler.worker.ts` downloads and joins the parts once (~25 MB, then cached by the browser),
+compiles with `clang++ -std=c++20 -O2 -fno-exceptions`, and `runner.worker.ts` runs the program with a WASI shim.
+A run that passes its time limit is stopped by terminating the runner worker. `<bits/stdc++.h>` is provided by
+`src/compiler/headers.ts` (libc++ has none).
 
 ## Deploying to Cloudflare Pages
 

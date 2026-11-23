@@ -15,6 +15,7 @@ const Problems = lazy(() => import('@/pages/Problems'));
 const Problem = lazy(() => import('@/pages/Problem'));
 const Learn = lazy(() => import('@/pages/Learn'));
 const Profile = lazy(() => import('@/pages/Profile'));
+const Playground = lazy(() => import('@/pages/Playground'));
 
 const wrap = (el: ReactNode) => <Suspense fallback={<div className="min-h-[60vh]" />}>{el}</Suspense>;
 const guest = (el: ReactNode) => (
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: '/problems/:id', element: wrap(<Problem />) },
       { path: '/learn', element: wrap(<Learn />) },
       { path: '/profile', element: wrap(<Profile />) },
+      { path: '/run', element: wrap(<Playground />) },
       { path: '*', element: <NotFound /> },
     ],
   },
