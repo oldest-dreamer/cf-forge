@@ -41,7 +41,7 @@ src/
 | 1 | Design system, EN/BN, contest guide, 36 tag pages, ProblemEntry schema, first problems | — |
 | 2 | Deploy on Cloudflare Pages ✅ | Connect this repo in Cloudflare Pages |
 | 3 | Login (email + password, Continue with Google), login required, profile API ✅ | Neon project + Neon Auth, `DATABASE_URL` secret |
-| 4 | Live Codeforces profile (user's own handle) and real verdicts | — |
+| 4 | Live Codeforces dashboard (user's own handle), solved marks, real verdicts ✅ | — |
 | 5 | In-browser C++ compiler (WebAssembly) for Run | — |
 | 6 | C++ from zero course + STL toolkit | — |
 | 7 | Gemini AI tutor on every page, per-user daily limit | Gemini API key from Google AI Studio |

@@ -152,8 +152,8 @@ export const S = {
     copied: { en: 'Copied', bn: 'কপি হয়েছে' },
     openOnCf: { en: 'Open on Codeforces', bn: 'কোডফোর্সেসে খুলুন' },
     runSoon: {
-      en: 'Run and real verdicts arrive in a later phase.',
-      bn: 'Run ও আসল ভার্ডিক্ট পরের ধাপে আসছে।',
+      en: 'Run in the browser arrives in the next phase. Your real verdict is just below.',
+      bn: 'ব্রাউজারে Run আসছে পরের ধাপে। আপনার আসল ভার্ডিক্ট ঠিক নিচে।',
     },
     contents: { en: 'On this page', bn: 'এই পাতায়' },
     kinds: {
@@ -221,8 +221,8 @@ export const S = {
   profile: {
     title: { en: 'My profile', bn: 'আমার প্রোফাইল' },
     lede: {
-      en: 'Your account and training settings. Add your Codeforces handle whenever you like; your live stats arrive in the next phase.',
-      bn: 'আপনার অ্যাকাউন্ট আর অনুশীলনের সেটিংস। যখন খুশি কোডফোর্সেস হ্যান্ডেল যোগ করুন; লাইভ পরিসংখ্যান আসছে পরের ধাপে।',
+      en: 'Your live Codeforces stats and your account settings. Add your handle once and every page knows what you have solved.',
+      bn: 'আপনার লাইভ কোডফোর্সেস পরিসংখ্যান আর অ্যাকাউন্ট সেটিংস। একবার হ্যান্ডেল যোগ করলেই প্রতিটি পাতা জানবে আপনি কী সমাধান করেছেন।',
     },
     name: { en: 'Display name', bn: 'প্রদর্শিত নাম' },
     email: { en: 'Email', bn: 'ইমেইল' },

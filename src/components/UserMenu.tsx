@@ -5,6 +5,8 @@ import { LogOut, UserRound } from 'lucide-react';
 import { authClient } from '@/lib/auth';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
+import { useAccount } from '@/lib/account';
+import { rankFor } from '@/lib/ranks';
 
 export function Avatar({ name, image, size = 34 }: { name?: string | null; image?: string | null; size?: number }) {
   const [broken, setBroken] = useState(false);
@@ -38,6 +40,7 @@ export function UserMenu() {
   const { t } = useI18n();
   const { data } = authClient.useSession();
   const navigate = useNavigate();
+  const { cfUser } = useAccount();
   const [open, setOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -96,6 +99,14 @@ export function UserMenu() {
               <div className="min-w-0">
                 <p className="truncate font-medium">{user.name}</p>
                 <p className="truncate text-sm text-slate">{user.email}</p>
+                {cfUser && (
+                  <p
+                    className="truncate font-display text-sm font-semibold"
+                    style={{ color: typeof cfUser.rating === 'number' ? rankFor(cfUser.rating).color : undefined }}
+                  >
+                    {cfUser.handle}
+                  </p>
+                )}
               </div>
             </div>
             <div className="p-1.5">

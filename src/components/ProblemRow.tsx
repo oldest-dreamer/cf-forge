@@ -4,9 +4,15 @@ import { TAG_BY_SLUG } from '@/data/tags/tags';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
 import { RatingPill } from './RatingPill';
+import { CheckCircle2 } from 'lucide-react';
+import { useAccount } from '@/lib/account';
+import { problemKey } from '@/lib/cf';
+import { CFS } from '@/i18n/cfStrings';
 
 export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolean }) {
   const { t, num } = useI18n();
+  const { solved } = useAccount();
+  const done = solved.has(problemKey(p));
   return (
     <li className="border-b border-seam/70">
       <Link
@@ -17,6 +23,12 @@ export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolea
         <span className="min-w-0">
           <span className="flex flex-wrap items-center gap-2">
             <span className="font-display text-lg font-semibold group-hover:text-ember">{p.name}</span>
+            {done && (
+              <span className="inline-flex items-center gap-1 text-sm text-[#56d364]">
+                <CheckCircle2 size={15} />
+                <span className="sr-only sm:not-sr-only">{t(CFS.track.solved)}</span>
+              </span>
+            )}
             {featured && (
               <span className="rounded-full bg-ember/15 px-2 py-0.5 text-xs text-ember">{t(S.problems.featured)}</span>
             )}

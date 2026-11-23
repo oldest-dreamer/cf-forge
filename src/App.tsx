@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { RequireAuth, GuestOnly } from '@/components/RequireAuth';
 import { ForgeLoader } from '@/components/ForgeLoader';
+import { AccountProvider } from '@/lib/account';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
 
@@ -28,7 +29,9 @@ const router = createBrowserRouter([
   {
     element: (
       <RequireAuth>
-        <Layout />
+        <AccountProvider>
+          <Layout />
+        </AccountProvider>
       </RequireAuth>
     ),
     children: [

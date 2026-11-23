@@ -11,6 +11,7 @@ import { RatingPill } from '@/components/RatingPill';
 import { CodeBlock, IoBlock } from '@/components/CodeBlock';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
+import { ProblemStatusBadge, ProblemTracker } from '@/components/ProblemTracker';
 
 function useActivePart() {
   const [active, setActive] = useState<ProblemPart>('overview');
@@ -174,6 +175,7 @@ export default function Problem() {
             <PageHead title={`${p.id}. ${p.name}`}>
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <RatingPill rating={p.rating} />
+                <ProblemStatusBadge p={p} />
                 {p.tags.map((s) => (
                   <Link
                     key={s}
@@ -291,6 +293,9 @@ export default function Problem() {
 
           <Part id="solutions" n={8}>
             <Solutions p={p} />
+            <div className="mt-8">
+              <ProblemTracker p={p} />
+            </div>
           </Part>
 
           <Part id="tests" n={9}>
