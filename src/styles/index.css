@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Base: quenched steel */
+  --color-steel: #18212f;
+  --color-iron: #202b3c;
+  --color-iron-2: #283548;
+  --color-seam: #33425a;
+  --color-ash: #e4e8ef;
+  --color-slate: #8e9aae;
+  --color-ember: #f0a04b;
+  --color-ember-deep: #c97a2a;
+
+  /* Codeforces rank spectrum — used only to mean rating */
+  --color-r-newbie: #9aa3ad;
+  --color-r-pupil: #3fb950;
+  --color-r-specialist: #2ec4b6;
+  --color-r-expert: #5b8cff;
+  --color-r-cm: #b57cff;
+  --color-r-master: #ff9f40;
+  --color-r-im: #ff8c1a;
+  --color-r-gm: #ff4d4d;
+  --color-r-igm: #ff2a2a;
+  --color-r-lgm: #e00000;
+
+  --font-display: 'Bricolage Grotesque Variable', 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-forge: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-steel);
+    color: var(--color-ash);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    min-height: 100dvh;
+  }
+  html[lang='bn'] body {
+    line-height: 1.75;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-ember) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer components {
+  .prose-forge {
+    max-width: 68ch;
+  }
+  .prose-forge p + p {
+    margin-top: 0.85em;
+  }
+  .inline-code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    padding: 0.1em 0.38em;
+    border-radius: 5px;
+    background: var(--color-iron-2);
+    color: #ffd7a8;
+  }
+  /* Steel grain: a faint diagonal brushed texture behind the app */
+  .grain {
+    background-image:
+      radial-gradient(1200px 600px at 85% -10%, rgba(240, 160, 75, 0.07), transparent 60%),
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

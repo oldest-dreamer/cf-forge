@@ -1,0 +1,35 @@
+import { Link } from 'react-router-dom';
+import type { ProblemEntry } from '@/data/problems/types';
+import { TAG_BY_SLUG } from '@/data/tags/tags';
+import { useI18n } from '@/i18n/I18nProvider';
+import { S } from '@/i18n/strings';
+import { RatingPill } from './RatingPill';
+
+export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolean }) {
+  const { t, num } = useI18n();
+  return (
+    <li className="border-b border-seam/70">
+      <Link
+        to={`/problems/${p.id}`}
+        className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-4 transition-colors hover:bg-iron/40 sm:grid-cols-[5rem_1fr_auto_auto]"
+      >
+        <span className="pl-2 font-mono text-sm text-slate">{p.id}</span>
+        <span className="min-w-0">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="font-display text-lg font-semibold group-hover:text-ember">{p.name}</span>
+            {featured && (
+              <span className="rounded-full bg-ember/15 px-2 py-0.5 text-xs text-ember">{t(S.problems.featured)}</span>
+            )}
+          </span>
+          <span className="mt-0.5 block truncate text-sm text-slate">
+            {p.tags.map((s) => t(TAG_BY_SLUG[s].name)).join(', ')}
+          </span>
+        </span>
+        <span className="hidden text-sm text-slate tabular-nums sm:block">
+          {num(p.solutions.length)} {t(S.problems.solutions)}
+        </span>
+        <RatingPill rating={p.rating} className="mr-2" />
+      </Link>
+    </li>
+  );
+}
