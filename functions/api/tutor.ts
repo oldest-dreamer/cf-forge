@@ -18,7 +18,7 @@ function versionOf(name: string) {
  * Ask Google which models this key can use, and prefer the newest stable Flash model.
  * Cached for an hour per worker. Falls back to a fixed list if listing fails.
  */
-async function pickModels(env: Env, base: string): Promise<string[]> {
+export async function pickModels(env: Env, base: string): Promise<string[]> {
   if (env.GEMINI_MODEL) return [env.GEMINI_MODEL];
   if (modelCache && Date.now() - modelCache.at < 3600_000) return modelCache.models;
   try {
