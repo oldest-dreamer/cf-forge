@@ -117,3 +117,71 @@ export const j1363D: JudgeFactory = (data, o) => {
     end: () => ({ ok: false, message: 'the program ended without printing the maximums' }),
   };
 };
+
+// 1534E Lost Array: "? i1 .. ik" (k distinct indices) -> xor of those elements; at most 500 queries;
+// "! x" with x the xor of the whole array, or "-1" when no sequence of queries can determine it.
+const reachable = (n: number, k: number) => {
+  const seen = new Array(n + 1).fill(false);
+  seen[0] = true;
+  const queue = [0];
+  for (let h = 0; h < queue.length; h++) {
+    const x = queue[h];
+    for (let j = Math.max(0, k - (n - x)); j <= Math.min(k, x); j++) {
+      const y = x - j + (k - j);
+      if (!seen[y]) {
+        seen[y] = true;
+        queue.push(y);
+      }
+    }
+  }
+  return seen[n];
+};
+export const j1534E: JudgeFactory = (data, o) => {
+  const [n, k, ...a] = nums(data);
+  const total = a.reduce((s, v) => s ^ v, 0);
+  const possible = reachable(n, k);
+  const max = budget(500, o.lenient);
+  let q = 0;
+  return {
+    first: `${n} ${k}`,
+    onLine(line) {
+      const t = line.trim();
+      if (t === '-1') return possible ? reject('the xor can be found, so -1 is wrong') : accept('correctly said it is impossible');
+      const v = intsOf(t.slice(1));
+      if (t.startsWith('!')) {
+        if (!v || v.length !== 1) return reject(bad(line));
+        if (!possible) return reject('it is impossible here: print -1');
+        return v[0] === total ? accept(`found the xor with ${q} queries`) : reject('the xor is wrong');
+      }
+      if (!t.startsWith('?') || !v || v.length !== k) return reject(bad(line));
+      if (new Set(v).size !== k || v.some((x) => x < 1 || x > n)) return reject(bad(line));
+      if (++q > max) return reject('more than 500 queries');
+      return reply(String(v.reduce((s, i) => s ^ a[i - 1], 0)));
+    },
+    end: () => ({ ok: false, message: 'the program ended without an answer' }),
+  };
+};
+
+// 1762D GCD Queries: the judge sends 1 and n; "? i j" (i != j) -> gcd(p_i, p_j); at most 2n queries;
+// "! x y" with p_x = 0 or p_y = 0.
+export const j1762D: JudgeFactory = (data, o) => {
+  const [n, ...p] = nums(data);
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+  const max = budget(2 * n, o.lenient);
+  let q = 0;
+  return {
+    first: `1\n${n}`,
+    onLine(line) {
+      const t = line.trim();
+      const v = intsOf(t.slice(1));
+      if (t.startsWith('!')) {
+        if (!v || v.length !== 2 || v.some((x) => x < 1 || x > n)) return reject(bad(line));
+        return p[v[0] - 1] === 0 || p[v[1] - 1] === 0 ? accept(`one of the two positions holds 0 (${q} queries)`) : reject('neither position holds 0');
+      }
+      if (!t.startsWith('?') || !v || v.length !== 2 || v[0] === v[1] || v.some((x) => x < 1 || x > n)) return reject(bad(line));
+      if (++q > max) return reject(`more than ${2 * n} queries`);
+      return reply(String(gcd(p[v[0] - 1], p[v[1] - 1])));
+    },
+    end: () => ({ ok: false, message: 'the program ended without an answer' }),
+  };
+};

@@ -69,7 +69,7 @@ function playNative(bin, factory, data, lenient) {
         send(step.text);
       }
     });
-    child.on('exit', () => {
+    child.on('close', () => {
       if (settled) return;
       if (buf.trim()) {
         const step = judge.onLine(buf.trim());
