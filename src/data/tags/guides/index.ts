@@ -6,6 +6,8 @@ import { constructiveGuide, binarySearchGuide, twoPointersGuide, dpGuide, dataSt
 import { combinatoricsGuide, probabilitiesGuide, gamesGuide, geometryGuide, matricesGuide, crtGuide, interactiveGuide } from './math2';
 import { graphsGuide, dfsGuide, treesGuide, shortestPathsGuide, dsuGuide, flowsGuide, matchingsGuide, twoSatGuide } from './graphs';
 import { hashingGuide, suffixStructuresGuide, parsingGuide, divideAndConquerGuide, meetInTheMiddleGuide, ternarySearchGuide, fftGuide, schedulesGuide } from './advanced';
+import { meetInTheMiddleGuideDeep, divideAndConquerGuideDeep } from './deep3a';
+import { ternarySearchGuideDeep, interactiveGuideDeep } from './deep3b';
 import { fftGuideDeep, suffixStructuresGuideDeep, parsingGuideDeep, schedulesGuideDeep } from './deep2';
 import { flowsGuideDeep, matchingsGuideDeep, twoSatGuideDeep, crtGuideDeep } from './deep1';
 
@@ -18,6 +20,7 @@ const ALL: TagGuide[] = [
   // deeper guides override the earlier ones with the same slug (later entries win)
   flowsGuideDeep, matchingsGuideDeep, twoSatGuideDeep, crtGuideDeep,
   fftGuideDeep, suffixStructuresGuideDeep, parsingGuideDeep, schedulesGuideDeep,
+  meetInTheMiddleGuideDeep, divideAndConquerGuideDeep, ternarySearchGuideDeep, interactiveGuideDeep,
 ];
 
 /** A full guide for every tag. */
