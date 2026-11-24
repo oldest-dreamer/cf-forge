@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int q = r() % 12 + 1; std::vector<std::string> out; int x = 0; bool any = false; for (int i = 0; i < q; i++) { if (!any || r() % 2) { x += r() % 5; out.push_back("1 " + std::to_string(x)); any = true; } else out.push_back("2"); } out.push_back("2"); printf("%d\n", (int)out.size()); for (auto& s : out) puts(s.c_str()); }
