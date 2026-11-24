@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n, m1, m2; cin >> n >> m1 >> m2; vector<int> a(n + 1), b(n + 1); iota(a.begin(), a.end(), 0); iota(b.begin(), b.end(), 0); function<int(vector<int>&, int)> f = [&](vector<int>& p, int x) { return p[x] == x ? x : p[x] = f(p, p[x]); }; for (int i = 0; i < m1; i++) { int u, v; cin >> u >> v; a[f(a, u)] = f(a, v); } for (int i = 0; i < m2; i++) { int u, v; cin >> u >> v; b[f(b, u)] = f(b, v); } vector<pair<int,int>> e; for (int i = 1; i <= n; i++) for (int j = i + 1; j <= n; j++) if (f(a, i) != f(a, j) && f(b, i) != f(b, j)) { a[f(a, i)] = f(a, j); b[f(b, i)] = f(b, j); e.push_back({i, j}); } cout << e.size() << "\n"; for (auto [u, v] : e) cout << u << " " << v << "\n"; }

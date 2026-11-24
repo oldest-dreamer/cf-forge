@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]); int n; in >> n; vector<int> pos(n + 1, -1); for (int i = 0; i < n; i++) { int k; if (!(out >> k) || k < 1 || k > n || pos[k] != -1) return 1; pos[k] = i; } vector<int> p(n), lo(n), hi(n); iota(p.begin(), p.end(), 0); iota(lo.begin(), lo.end(), 0); iota(hi.begin(), hi.end(), 0); function<int(int)> f = [&](int x) { return p[x] == x ? x : p[x] = f(p[x]); }; for (int i = 0; i < n - 1; i++) { int x, y; in >> x >> y; int a = f(pos[x]), b = f(pos[y]); if (a == b) return 1; if (hi[a] + 1 != lo[b] && hi[b] + 1 != lo[a]) return 1; p[b] = a; lo[a] = min(lo[a], lo[b]); hi[a] = max(hi[a], hi[b]); } return 0; }

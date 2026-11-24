@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 7 + 1; std::vector<std::pair<int,int>> f[2]; for (int k = 0; k < 2; k++) { std::vector<int> lab(n); std::iota(lab.begin(), lab.end(), 1); std::shuffle(lab.begin(), lab.end(), r); for (int i = 1; i < n; i++) if (r() % 2) f[k].push_back({lab[r() % i], lab[i]}); } printf("%d %d %d\n", n, (int)f[0].size(), (int)f[1].size()); for (int k = 0; k < 2; k++) for (auto [a, b] : f[k]) printf("%d %d\n", a, b); }
