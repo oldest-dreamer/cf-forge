@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { AlertTriangle, ArrowLeft, CheckCircle2, ExternalLink, Footprints } from 'lucide-react';
@@ -18,33 +18,95 @@ import { problemKey } from '@/lib/cf';
 import NotFound from './NotFound';
 import { useTutorPage } from '@/lib/tutor';
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section className="mt-14">
+    <section id={id} className="mt-14 scroll-mt-32">
       <h2 className="text-2xl font-semibold">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
   );
 }
 
+
+type TocItem = { id: string; label: string };
+
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = useState(ids[0] ?? '');
+  const key = ids.join('|');
+  useEffect(() => {
+    const els = ids.map((id) => document.getElementById(id)).filter((e): e is HTMLElement => !!e);
+    if (els.length === 0 || typeof IntersectionObserver === 'undefined') return;
+    const seen = new Map<string, number>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) seen.set(e.target.id, e.isIntersecting ? e.boundingClientRect.top : Number.POSITIVE_INFINITY);
+        const visible = [...seen.entries()].filter(([, top]) => Number.isFinite(top)).sort((a, b) => a[1] - b[1]);
+        if (visible.length) setActive(visible[0][0]);
+      },
+      { rootMargin: '-120px 0px -55% 0px', threshold: 0 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return active;
+}
+
+function jump(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  history.replaceState(null, '', `#${id}`);
+}
+
 export default function TagDetail() {
   const { slug = '' } = useParams();
-  const { t, num } = useI18n();
-  const { solved } = useAccount();
+  const { t } = useI18n();
   const tag = TAG_BY_SLUG[slug];
   useTutorPage({ kind: 'tag', id: slug }, tag ? t(tag.name) : slug);
   if (!tag) return <NotFound />;
+  return <TagBody tag={tag} />;
+}
+
+function TagBody({ tag }: { tag: NonNullable<(typeof TAG_BY_SLUG)[string]> }) {
+  const { t, num } = useI18n();
+  const { solved } = useAccount();
 
   const guide = GUIDES[tag.slug];
   const featured = featuredForTag(tag.slug);
   const rest = problemsForTag(tag.slug).filter((p) => !featured.includes(p));
   const ladder = LADDERS[tag.slug] ?? [];
+  const toc: TocItem[] = [
+    ...(guide ? [{ id: 'what', label: t(S.tags.guide.what) }] : []),
+    { id: 'recognize', label: t(S.tags.guide.recognize) },
+    ...(guide ? [{ id: 'patterns', label: t(S.tags.guide.patterns) }, { id: 'mistakes', label: t(S.tags.guide.mistakes) }, { id: 'plan', label: t(S.tags.guide.plan) }] : []),
+    ...(featured.length + rest.length > 0 ? [{ id: 'explained', label: t(S.tags.guide.explained) }] : []),
+    ...(ladder.length > 0 ? [{ id: 'ladder', label: t(S.tags.guide.ladder) }] : []),
+  ];
+  const active = useActiveSection(toc.map((x) => x.id));
 
   return (
     <div className="mx-auto max-w-6xl px-5">
-      <Link to="/tags" className="mt-8 inline-flex items-center gap-1.5 text-sm text-slate hover:text-ash">
-        <ArrowLeft size={15} /> {t(S.tags.back)}
-      </Link>
+      <div className="sticky top-16 z-30 -mx-5 border-b border-seam/50 bg-steel/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-5 py-2">
+          <Link
+            to="/tags"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-seam bg-iron/60 px-3 py-1 text-sm text-ash/90 transition-colors hover:border-ember/60 hover:text-ember"
+          >
+            <ArrowLeft size={15} /> {t(S.tags.back)}
+          </Link>
+          <nav aria-label={t(S.tags.guide.tocJump)} className="-mr-5 flex min-w-0 flex-1 gap-1.5 overflow-x-auto pr-5 lg:hidden">
+            {toc.map((it) => (
+              <button
+                key={it.id}
+                type="button"
+                onClick={() => jump(it.id)}
+                className={`shrink-0 rounded-full px-3 py-1 text-sm transition-colors ${active === it.id ? 'bg-ember/15 text-ember' : 'text-slate hover:text-ash'}`}
+              >
+                {it.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
       <PageHead title={t(tag.name)} lede={t(tag.blurb)}>
         <a
           href={cfTagUrl(tag)}
@@ -56,9 +118,11 @@ export default function TagDetail() {
         </a>
       </PageHead>
 
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_13.5rem] lg:gap-12">
+      <div className="min-w-0">
       <div className="max-w-4xl">
         {guide ? (
-          <Section title={t(S.tags.guide.what)}>
+          <Section id="what" title={t(S.tags.guide.what)}>
             <div className="prose-forge space-y-4 text-ash/90">
               {guide.intro.map((p, i) => (
                 <p key={i}>{t(p)}</p>
@@ -69,7 +133,7 @@ export default function TagDetail() {
           <p className="mt-10 rounded-xl border border-dashed border-seam p-4 text-slate">{t(S.tags.guide.comingSoon)}</p>
         )}
 
-        <Section title={t(S.tags.guide.recognize)}>
+        <Section id="recognize" title={t(S.tags.guide.recognize)}>
           <ul className="grid gap-3 md:grid-cols-2">
             {[...tag.signals, ...(guide?.recognize ?? [])].map((s, i) => (
               <li key={i} className="rounded-xl border border-seam bg-iron/50 p-4 text-ash/85">
@@ -80,7 +144,7 @@ export default function TagDetail() {
         </Section>
 
         {guide && (
-          <Section title={t(S.tags.guide.patterns)}>
+          <Section id="patterns" title={t(S.tags.guide.patterns)}>
             <ol className="space-y-10">
               {guide.patterns.map((pt, i) => {
                 const hosted = pt.example.problem ? PROBLEM_BY_ID[pt.example.problem] : undefined;
@@ -122,7 +186,7 @@ export default function TagDetail() {
         )}
 
         {guide && (
-          <Section title={t(S.tags.guide.mistakes)}>
+          <Section id="mistakes" title={t(S.tags.guide.mistakes)}>
             <ul className="space-y-3">
               {guide.mistakes.map((m, i) => (
                 <li key={i} className="flex gap-3">
@@ -135,7 +199,7 @@ export default function TagDetail() {
         )}
 
         {guide && (
-          <Section title={t(S.tags.guide.plan)}>
+          <Section id="plan" title={t(S.tags.guide.plan)}>
             <ol className="space-y-3">
               {guide.plan.map((m, i) => (
                 <li key={i} className="flex gap-3">
@@ -151,7 +215,7 @@ export default function TagDetail() {
       </div>
 
       {featured.length + rest.length > 0 && (
-        <Section title={t(S.tags.guide.explained)}>
+        <Section id="explained" title={t(S.tags.guide.explained)}>
           <p className="mb-4 text-sm text-slate">
             <span className="font-display text-base font-semibold text-ember"><CodeSlots value={featured.length + rest.length} /></span> {t(S.tags.guide.explainedGoal)}
           </p>
@@ -167,7 +231,7 @@ export default function TagDetail() {
       )}
 
       {ladder.length > 0 && (
-        <Section title={t(S.tags.guide.ladder)}>
+        <Section id="ladder" title={t(S.tags.guide.ladder)}>
           <p className="mb-4 max-w-[62ch] text-slate">{t(S.tags.guide.ladderLede)}</p>
           <ul className="border-t border-seam/70">
             {ladder.map((it) => {
@@ -209,6 +273,29 @@ export default function TagDetail() {
           </ul>
         </Section>
       )}
+      </div>
+
+      <aside className="hidden lg:block">
+        <nav aria-label={t(S.tags.guide.toc)} className="sticky top-32 mt-14 max-h-[calc(100vh-9rem)] overflow-y-auto">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate">{t(S.tags.guide.toc)}</p>
+          <ul className="space-y-0.5 border-l border-seam">
+            {toc.map((it) => (
+              <li key={it.id}>
+                <button
+                  type="button"
+                  onClick={() => jump(it.id)}
+                  className={`-ml-px block w-full border-l-2 py-1.5 pl-4 text-left text-sm transition-colors ${
+                    active === it.id ? 'border-ember text-ember' : 'border-transparent text-slate hover:text-ash'
+                  }`}
+                >
+                  {it.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+      </div>
     </div>
   );
 }

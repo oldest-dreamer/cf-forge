@@ -206,7 +206,7 @@ export default function Home() {
             {S.home.roadmap.map((r, i) => (
               <li key={i} className="flex gap-3">
                 <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border border-seam text-xs text-slate tabular-nums">
-                  {num(i + 2)}
+                  {num(i + 1)}
                 </span>
                 <span className="text-ash/85">{t(r)}</span>
               </li>

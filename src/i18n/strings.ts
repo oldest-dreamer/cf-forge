@@ -57,14 +57,14 @@ export const S = {
         to: '/problems',
       },
     ],
-    roadmapTitle: { en: 'Being forged next', bn: 'এরপর যা আসছে' },
+    roadmapTitle: { en: 'Already live, and still growing', bn: 'এখনই চালু আছে, আর বাড়ছে' },
     roadmap: [
       { en: 'Sign in with email or Google', bn: 'ইমেইল বা গুগল দিয়ে লগইন' },
       { en: 'Your live Codeforces profile and verdicts', bn: 'আপনার লাইভ কোডফোর্সেস প্রোফাইল ও ভার্ডিক্ট' },
-      { en: 'Run C++ in the browser', bn: 'ব্রাউজারেই C++ চালানো' },
+      { en: 'Run C++ in the browser, including interactive problems with a built-in judge', bn: 'ব্রাউজারেই C++ চালানো, বিল্ট-ইন জাজসহ ইন্টারঅ্যাকটিভ প্রবলেমও' },
       { en: 'C++ from zero and the STL toolkit', bn: 'শূন্য থেকে C++ আর STL টুলকিট' },
       { en: 'An AI tutor on every page', bn: 'প্রতিটি পাতায় AI টিউটর' },
-      { en: 'About 1,000 explained problems', bn: 'প্রায় ১,০০০ ব্যাখ্যাসহ প্রবলেম' },
+      { en: 'Over 400 explained problems, with more added tag by tag', bn: 'চারশোর বেশি ব্যাখ্যাসহ প্রবলেম, ট্যাগ ধরে ধরে আরও যোগ হচ্ছে' },
     ],
   },
 
@@ -111,7 +111,9 @@ export const S = {
       mistakes: { en: 'Common mistakes', bn: 'সাধারণ ভুল' },
       plan: { en: 'How to practise', bn: 'কীভাবে অনুশীলন করবেন' },
       explained: { en: 'Solved and explained', bn: 'সমাধান ও ব্যাখ্যাসহ' },
-      explainedGoal: { en: 'of 20 written', bn: '২০টির মধ্যে লেখা হয়েছে' },
+      explainedGoal: { en: 'written so far', bn: 'টি এখন পর্যন্ত লেখা হয়েছে' },
+      toc: { en: 'On this page', bn: 'এই পাতায়' },
+      tocJump: { en: 'Jump to a section', bn: 'অংশে যান' },
       ladder: { en: 'Practice ladder', bn: 'অনুশীলনের সিঁড়ি' },
       ladderLede: {
         en: 'The most-solved problems with this tag in each rating band, from the Codeforces API. Climb from the top.',
