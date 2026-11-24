@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]), ans(v[3]); int t; in >> t; while (t--) { int n, x; in >> n >> x; vector<int> w(n); for (auto& y : w) in >> y; string a, o; ans >> a; if (a == "YES") for (int i = 0; i < n; i++) { int y; ans >> y; } if (!(out >> o)) return 1; if (o != a) return 1; if (o == "NO") continue; vector<int> p(n); for (auto& y : p) if (!(out >> y)) return 1; vector<int> s1 = w, s2 = p; sort(s1.begin(), s1.end()); sort(s2.begin(), s2.end()); if (s1 != s2) return 1; int s = 0; for (int y : p) { s += y; if (s == x) return 1; } } return 0; }

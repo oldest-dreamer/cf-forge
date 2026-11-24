@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main() { int t; std::cin >> t; while (t--) { std::string s; std::cin >> s; int n = s.size(), best = 0; for (int l = 0; l < n; l++) for (int r = l; r < n; r++) { std::string w = s.substr(l, r - l + 1); if (w.find('1') != std::string::npos && w.find('2') != std::string::npos && w.find('3') != std::string::npos && (best == 0 || r - l + 1 < best)) best = r - l + 1; } std::cout << best << "\n"; } }

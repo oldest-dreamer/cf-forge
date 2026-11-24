@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main() { int t; std::cin >> t; while (t--) { int n; std::cin >> n; std::vector<int> p(n + 1, 0); for (int i = 2; i <= n; i++) std::cin >> p[i]; std::string s; std::cin >> s; int cnt = 0; for (int v = 1; v <= n; v++) { int w = 0, b = 0; for (int u = 1; u <= n; u++) { int x = u; while (x && x != v) x = p[x]; if (x == v) (s[u - 1] == 'W' ? w : b)++; } if (w == b) cnt++; } std::cout << cnt << "\n"; } }

@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 10 + 1, a = r() % 5 + 1; std::string s; for (int i = 0; i < n; i++) s += char('a' + r() % a); int q = r() % 8 + 1; printf("%s\n%d\n", s.c_str(), q - 0 + 1); for (int i = 0; i < q; i++) { if (r() % 2) printf("1 %d %c\n", int(r() % n + 1), char('a' + r() % a)); else { int l = r() % n + 1, rr = r() % n + 1; if (l > rr) std::swap(l, rr); printf("2 %d %d\n", l, rr); } } printf("2 1 %d\n", n); }

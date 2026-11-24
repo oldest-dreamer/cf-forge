@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]); int t; in >> t; while (t--) { int n, m; in >> n >> m; vector<vector<int>> adj(n + 1); for (int i = 0; i < m; i++) { int a, b; in >> a >> b; adj[a].push_back(b); adj[b].push_back(a); } int k; if (!(out >> k) || k < 1 || k > n / 2) return 1; vector<bool> ch(n + 1, false); for (int i = 0; i < k; i++) { int x; if (!(out >> x) || x < 1 || x > n || ch[x]) return 1; ch[x] = true; } for (int w = 1; w <= n; w++) { if (ch[w]) continue; bool ok = false; for (int u : adj[w]) if (ch[u]) ok = true; if (!ok) return 1; } } return 0; }
