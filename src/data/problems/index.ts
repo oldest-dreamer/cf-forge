@@ -43,6 +43,7 @@ import { p1265E, p518D, p148D, p839C, p1C, p659D, p1047B, p1117D, p621E, p222E, 
 import { p126B, p432D, p1200E, p113B, p1326D2, p1312D, p1288C, p1462E1, p300C, p1182E } from './wave14d.ts';
 import { WAVE as WAVE19A } from './wave19a.ts';
 import { WAVE as WAVE19B } from './wave19b.ts';
+import { WAVE as WAVE19C } from './wave19c.ts';
 import { p1236B, p1391C, p1462E2, p1420D, p1207D, p869C, p559C } from './wave15a.ts';
 import { p312B, p453A, p280C, p235B, p540D, p16E, p696B } from './wave15b.ts';
 import { p621C, p1543C, p1461C, p107B, p768D, p30C, p935D } from './wave15c.ts';
@@ -158,6 +159,8 @@ export const PROBLEMS: ProblemEntry[] = [
   ...WAVE19A,
   // wave 19b (fft, meet in the middle)
   ...WAVE19B,
+  // wave 19c (schedules)
+  ...WAVE19C,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(
