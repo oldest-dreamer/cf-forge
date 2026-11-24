@@ -514,7 +514,7 @@ export const p161D: ProblemEntry = {
   index: 'D',
   name: 'Distance in Tree',
   rating: 1800,
-  tags: ['dfs', 'dp', 'trees'],
+  tags: ['dfs', 'divide-and-conquer', 'dp', 'trees'],
   why: L('Tree DP: cnt[v][d] = vertices at depth d below v, merging children one by one.', 'ট্রি DP: cnt[v][d] = v-এর নিচে d গভীরতায় শীর্ষ, সন্তানগুলো একে একে মেলানো।'),
   statement: L('Count the unordered pairs of vertices of a tree whose distance is exactly k.', 'একটি ট্রির শীর্ষের এমন ক্রমহীন জোড়া গুনুন যাদের দূরত্ব ঠিক k।'),
   input: L('n and k, then n − 1 edges.', 'n আর k, তারপর n − ১টি প্রান্ত।'),
@@ -569,6 +569,76 @@ int main() {
 `,
       time: 'O(n · k)',
       space: 'O(n · k)',
+      accepted: true,
+      toolkit: ['vector', 'long-long'],
+    },
+    {
+      id: 'centroid',
+      kind: 'optimal',
+      title: L('Centroid decomposition', 'সেন্ট্রয়েড ডিকম্পোজিশন'),
+      idea: L('Split at the centroid, count crossing pairs with a depth table, recurse.', 'সেন্ট্রয়েডে ভাঙো, গভীরতা-সারণিতে ক্রসিং জোড়া গোনো, রিকার্স।'),
+      explain: [L('The code is iterative: a stack holds the starts of the remaining components, a BFS finds each component’s vertex order, and sizes are accumulated in reverse BFS order. Depths beyond k are never needed, so the BFS stops there.', 'কোডটি ইটারেটিভ: স্ট্যাকে বাকি কম্পোনেন্টের শুরু থাকে, BFS প্রতিটি কম্পোনেন্টের শীর্ষক্রম দেয়, আর আকার উল্টো BFS ক্রমে জমা হয়। k-র বেশি গভীরতা কখনও দরকার নেই, তাই BFS সেখানেই থামে।')],
+      code: raw`#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int n, K;
+vector<int> g[50005];
+bool dead[50005];
+int sz[50005], pr[50005];
+
+int main() {
+    scanf("%d %d", &n, &K);
+    for (int i = 1; i < n; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        g[a].push_back(b), g[b].push_back(a);
+    }
+    vector<int> cnt(K + 1, 0), stk = {1}, order;
+    ll ans = 0;
+    while (!stk.empty()) {
+        int s = stk.back();
+        stk.pop_back();
+        order.assign(1, s);
+        pr[s] = 0;
+        for (size_t i = 0; i < order.size(); i++)
+            for (int w : g[order[i]])
+                if (!dead[w] && w != pr[order[i]]) pr[w] = order[i], order.push_back(w);
+        int tot = order.size();
+        for (int v : order) sz[v] = 1;
+        for (int i = tot - 1; i >= 1; i--) sz[pr[order[i]]] += sz[order[i]];
+        int c = s;
+        for (int v : order) {
+            int mx = tot - sz[v];
+            for (int w : g[v])
+                if (!dead[w] && w != pr[v]) mx = max(mx, sz[w]);
+            if (2 * mx <= tot) { c = v; break; }
+        }
+        cnt[0] = 1;
+        vector<int> used = {0};
+        for (int w : g[c]) {
+            if (dead[w]) continue;
+            vector<int> nodes = {w}, par = {c}, dep = {1};
+            for (size_t i = 0; i < nodes.size(); i++) {
+                if (dep[i] >= K) continue;
+                for (int x : g[nodes[i]])
+                    if (!dead[x] && x != par[i]) nodes.push_back(x), par.push_back(nodes[i]), dep.push_back(dep[i] + 1);
+            }
+            for (int d : dep) ans += cnt[K - d];
+            for (int d : dep) cnt[d]++, used.push_back(d);
+        }
+        for (int d : used) cnt[d] = 0;
+        dead[c] = true;
+        for (int w : g[c])
+            if (!dead[w]) stk.push_back(w);
+    }
+    printf("%lld\n", ans);
+    return 0;
+}
+`,
+      time: 'O(n log n)',
+      space: 'O(n)',
       accepted: true,
       toolkit: ['vector', 'long-long'],
     },
