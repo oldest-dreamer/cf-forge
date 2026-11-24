@@ -1,8 +1,8 @@
 export const COURSE = {
   title: { en: 'Learn C++ from zero', bn: 'শূন্য থেকে C++ শিখুন' },
   lede: {
-    en: 'Twelve short lessons from your first cout to the STL you need for Div. 2. Every example runs in your browser, and every lesson ends with an exercise that checks itself.',
-    bn: 'প্রথম cout থেকে Div. 2-এর জন্য দরকারি STL পর্যন্ত বারোটি ছোট লেসন। প্রতিটি উদাহরণ আপনার ব্রাউজারেই চলে, আর প্রতিটি লেসনের শেষে একটি অনুশীলনী আছে যা নিজেই যাচাই হয়।',
+    en: 'Short lessons from your first cout to the STL you need for Div. 2: types, arrays, grids, recursion, containers, algorithms and debugging. Every example runs in your browser, and every lesson ends with an exercise that checks itself.',
+    bn: 'প্রথম cout থেকে Div. 2-এর জন্য দরকারি STL পর্যন্ত ছোট ছোট লেসন: টাইপ, অ্যারে, গ্রিড, রিকার্শন, কনটেইনার, অ্যালগরিদম ও ডিবাগিং। প্রতিটি উদাহরণ আপনার ব্রাউজারেই চলে, আর প্রতিটি লেসনের শেষে একটি অনুশীলনী আছে যা নিজেই যাচাই হয়।',
   },
   progress: { en: 'lessons finished', bn: 'টি লেসন শেষ' },
   start: { en: 'Start lesson 1', bn: 'লেসন ১ শুরু করুন' },

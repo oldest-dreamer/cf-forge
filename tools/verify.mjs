@@ -29,7 +29,7 @@ function build(name, code) {
   const src = join(tmp, `${name}.cpp`);
   const bin = join(tmp, name);
   writeFileSync(src, code);
-  execFileSync('g++', ['-std=gnu++20', '-O2', '-fno-exceptions', '-o', bin, src], { stdio: 'pipe' });
+  execFileSync('g++', [...(process.env.VERIFY_PCH ? ['-I', process.env.VERIFY_PCH] : []), '-std=gnu++20', '-O2', '-fno-exceptions', '-o', bin, src], { stdio: 'pipe' });
   return bin;
 }
 const run = (bin, input, args = []) => execFileSync(bin, args, { input, timeout: 5000, maxBuffer: 64 << 20 }).toString();
