@@ -6,6 +6,8 @@ import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
 import { cn } from '@/lib/cn';
 import { Logo } from './Logo';
+import { BranchedMenu } from './fx/BranchedMenu';
+import { ShinyText } from './fx/ShinyText';
 import { LangToggle } from './LangToggle';
 import { UserMenu } from './UserMenu';
 import { RUN } from '@/i18n/runStrings';
@@ -30,9 +32,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-seam/60 bg-steel/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-5">
-        <Link to="/" className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
-          <Logo className="size-7" />
-          {t(S.brand)}
+        <Link to="/" className="group flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
+          <Logo className="size-7 transition-transform duration-500 ease-[var(--ease-forge)] group-hover:rotate-[-8deg]" />
+          <ShinyText variant="chrome" speed={7}>{t(S.brand)}</ShinyText>
         </Link>
 
         <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="Main">
@@ -89,25 +91,9 @@ export function Header() {
             className="overflow-hidden border-t border-seam/60 lg:hidden"
             aria-label="Main"
           >
-            <ul className="mx-auto flex max-w-6xl flex-col px-5 py-3">
-              {LINKS.map((l, i) => (
-                <motion.li
-                  key={l.to}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.04 * i }}
-                >
-                  <NavLink
-                    to={l.to}
-                    className={({ isActive }) =>
-                      cn('block rounded-lg px-3 py-2.5', isActive ? 'bg-iron text-ash' : 'text-slate')
-                    }
-                  >
-                    {t(l.label)}
-                  </NavLink>
-                </motion.li>
-              ))}
-            </ul>
+            <div className="mx-auto max-w-6xl px-5 py-3">
+              <BranchedMenu items={LINKS.map((l) => ({ to: l.to, label: t(l.label) }))} />
+            </div>
           </motion.nav>
         )}
       </AnimatePresence>

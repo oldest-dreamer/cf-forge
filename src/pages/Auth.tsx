@@ -8,7 +8,10 @@ import { S } from '@/i18n/strings';
 import type { L } from '@/i18n/types';
 import { Logo } from '@/components/Logo';
 import { LangToggle } from '@/components/LangToggle';
-import { RankForge } from '@/components/RankForge';
+import { JellyRadio } from '@/components/fx/JellyRadio';
+import { LiveCode } from '@/components/fx/LiveCode';
+import { ShinyText } from '@/components/fx/ShinyText';
+import { FX } from '@/i18n/fxStrings';
 import { cn } from '@/lib/cn';
 
 type Mode = 'signin' | 'signup';
@@ -188,27 +191,20 @@ export default function Auth({ mode }: { mode: Mode }) {
             </motion.h1>
           </AnimatePresence>
 
-          <div role="tablist" className="relative isolate mt-7 grid grid-cols-2 rounded-xl bg-iron p-1 text-sm">
-            {(['signin', 'signup'] as const).map((m) => (
-              <Link
-                key={m}
-                role="tab"
-                aria-selected={mode === m}
-                to={`${m === 'signin' ? '/login' : '/signup'}${location.search}`}
-                replace
-                className={cn('relative rounded-lg py-2 text-center transition-colors', mode === m ? 'text-ash' : 'text-slate hover:text-ash')}
-              >
-                {mode === m && (
-                  <motion.span
-                    layoutId="auth-tab"
-                    className="absolute inset-0 -z-10 rounded-lg bg-iron-2 ring-1 ring-seam"
-                    transition={{ type: 'spring', stiffness: 460, damping: 36 }}
-                  />
-                )}
-                {t(m === 'signin' ? S.auth.signInTab : S.auth.signUpTab)}
-              </Link>
-            ))}
-          </div>
+          <JellyRadio<Mode>
+            role="tablist"
+            label={t(isUp ? S.auth.signUpTitle : S.auth.signInTitle)}
+            value={mode}
+            onChange={(m) => navigate(`${m === 'signin' ? '/login' : '/signup'}${location.search}`, { replace: true })}
+            options={[
+              { id: 'signin', label: t(S.auth.signInTab) },
+              { id: 'signup', label: t(S.auth.signUpTab) },
+            ]}
+            className="mt-7 grid grid-cols-2 rounded-xl bg-iron p-1 text-sm"
+            itemClassName="rounded-lg py-2 text-center"
+            pillClassName="rounded-lg bg-iron-2 ring-1 ring-seam"
+            activeText="text-ash"
+          />
 
           <button
             type="button"
@@ -328,13 +324,29 @@ export default function Auth({ mode }: { mode: Mode }) {
         </div>
       </div>
 
-      {/* Brand column */}
-      <div className="relative hidden flex-1 items-center overflow-hidden px-14 lg:flex">
-        <div className="w-full max-w-2xl">
-          <p className="max-w-[46ch] text-xl text-ash/85">{t(S.auth.pitch)}</p>
-          <div className="mt-10">
-            <RankForge />
-          </div>
+      {/* Brand column: a C++ editor that writes, compiles and passes on its own */}
+      <div className="relative hidden flex-1 items-center overflow-hidden px-10 xl:px-16 lg:flex">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-40 top-1/2 size-[42rem] -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(240,160,75,0.14),transparent)]"
+        />
+        <div className="relative mx-auto w-full max-w-2xl">
+          <h2 className="text-[2.1rem] font-bold leading-[1.1] xl:text-[2.6rem]">
+            <ShinyText variant="chrome" speed={6}>
+              {t(FX.live.headline)}
+            </ShinyText>
+          </h2>
+          <p className="mt-3 max-w-[52ch] text-ash/80">{t(S.auth.pitch)}</p>
+          <motion.div
+            initial={{ opacity: 0, y: 24, rotateX: 8 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformPerspective: 1200 }}
+            className="mt-6"
+          >
+            <LiveCode />
+          </motion.div>
+          <p className="mt-3 text-sm text-slate">{t(FX.live.caption)}</p>
         </div>
       </div>
     </div>

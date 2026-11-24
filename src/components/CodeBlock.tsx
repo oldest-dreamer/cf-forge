@@ -6,7 +6,7 @@ import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
 import { cn } from '@/lib/cn';
 
-const forgeTheme: PrismTheme = {
+export const forgeTheme: PrismTheme = {
   plain: { color: '#dfe5ee', backgroundColor: 'transparent' },
   styles: [
     { types: ['comment', 'prolog'], style: { color: '#6f7d93', fontStyle: 'italic' } },

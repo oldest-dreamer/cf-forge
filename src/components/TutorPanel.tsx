@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Code2, RotateCcw, SendHorizontal, Sparkles, Square, X } from 'lucide-react';
+import { CallChip } from './fx/CallChip';
+import { FX } from '@/i18n/fxStrings';
 import { useTutor, streamAnswer, fetchUsage, TutorError, type TutorContext, type Usage } from '@/lib/tutor';
 import { useI18n } from '@/i18n/I18nProvider';
 import { TUTOR } from '@/i18n/tutorStrings';
@@ -46,24 +48,17 @@ function quickFor(c: TutorContext): { label: L; prompt: L; mode: string; needsCo
 export function TutorButton() {
   const { t } = useI18n();
   const { open, setOpen } = useTutor();
-  const reduce = useReducedMotion();
   return (
     <AnimatePresence>
       {!open && (
-        <motion.button
-          type="button"
+        <CallChip
           onClick={() => setOpen(true)}
-          initial={reduce ? false : { scale: 0.6, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.6, opacity: 0, y: 20 }}
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.96 }}
-          className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-ember px-4 py-3 font-medium text-steel shadow-[0_12px_32px_-8px_rgba(240,160,75,0.55)]"
-          aria-label={t(TUTOR.open)}
-        >
-          <Sparkles size={18} />
-          <span className="hidden sm:inline">{t(TUTOR.open)}</span>
-        </motion.button>
+          ariaLabel={t(TUTOR.open)}
+          icon={<Sparkles size={17} />}
+          title={t(TUTOR.open)}
+          status={t(FX.tutorChip)}
+          className="fixed bottom-5 right-5 z-40"
+        />
       )}
     </AnimatePresence>
   );

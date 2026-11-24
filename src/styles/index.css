@@ -110,3 +110,128 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Motion pieces ─────────────────────────────────────── */
+@property --ring-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer components {
+  /* Shiny text: a band of light sweeping across the glyphs */
+  .shiny {
+    --shine-base: var(--color-ash);
+    --shine-hi: #ffffff;
+    background-image: linear-gradient(
+      105deg,
+      var(--shine-base) 0%,
+      var(--shine-base) 40%,
+      var(--shine-hi) 50%,
+      var(--shine-base) 60%,
+      var(--shine-base) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine 3.6s var(--ease-forge) infinite;
+  }
+  .shiny-chrome {
+    background-image: linear-gradient(
+      105deg,
+      #aab4c4 0%,
+      #e4e8ef 22%,
+      #ffffff 30%,
+      #7f8ba0 38%,
+      #e4e8ef 52%,
+      #ffd7a8 62%,
+      #f0a04b 68%,
+      #e4e8ef 80%,
+      #aab4c4 100%
+    );
+    background-size: 300% 100%;
+  }
+
+  /* Prompt bar: a slow ember arc travels round the border; brighter on focus */
+  .prompt-ring {
+    background: conic-gradient(
+      from var(--ring-angle),
+      var(--color-seam) 0deg,
+      var(--color-seam) 250deg,
+      rgba(240, 160, 75, 0.9) 310deg,
+      var(--color-seam) 360deg
+    );
+    animation: ring-spin 6s linear infinite;
+    transition: box-shadow 300ms var(--ease-forge);
+  }
+  .prompt-ring.is-focused {
+    animation-duration: 2.4s;
+    box-shadow: 0 0 0 4px rgba(240, 160, 75, 0.12), 0 20px 50px -24px rgba(240, 160, 75, 0.45);
+  }
+
+  /* Call chip voice meter */
+  .callbar {
+    animation: callbar 0.9s ease-in-out infinite alternate;
+    transform-origin: bottom;
+  }
+
+  /* Typing caret */
+  .live-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.15em;
+    margin-left: 1px;
+    vertical-align: -0.2em;
+    background: var(--color-ember);
+    animation: caret 1s steps(1) infinite;
+  }
+
+  /* Soft fade at the top and bottom of scrolling lists */
+  .list-fade {
+    mask-image: linear-gradient(to bottom, transparent 0, #000 1rem, #000 calc(100% - 1.5rem), transparent 100%);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-seam) transparent;
+  }
+}
+
+@keyframes shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+@keyframes ring-spin {
+  to {
+    --ring-angle: 360deg;
+  }
+}
+@keyframes callbar {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1.25);
+  }
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny,
+  .prompt-ring,
+  .callbar,
+  .live-caret {
+    animation: none !important;
+  }
+  .shiny {
+    color: var(--shine-base);
+    background: none;
+  }
+}
