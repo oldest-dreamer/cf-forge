@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import type { ProblemEntry } from '@/data/problems/types';
 import { TAG_BY_SLUG } from '@/data/tags/tags';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -9,17 +10,27 @@ import { useAccount } from '@/lib/account';
 import { problemKey } from '@/lib/cf';
 import { CFS } from '@/i18n/cfStrings';
 
-export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolean }) {
+export function ProblemRow({ p, featured, index = 0 }: { p: ProblemEntry; featured?: boolean; index?: number }) {
   const { t, num } = useI18n();
+  const reduce = useReducedMotion();
   const { solved } = useAccount();
   const done = solved.has(problemKey(p));
   return (
-    <li className="border-b border-seam/70">
+    <motion.li
+      initial={reduce ? false : { opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10px' }}
+      transition={{ type: 'spring', stiffness: 340, damping: 28, delay: Math.min(index, 10) * 0.03 }}
+      className="border-b border-seam/70"
+    >
       <Link
         to={`/problems/${p.id}`}
-        className="group grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-4 transition-colors hover:bg-iron/40 sm:grid-cols-[5rem_1fr_auto_auto]"
+        className="group relative grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-4 transition-colors hover:bg-iron/40 sm:grid-cols-[5rem_1fr_auto_auto]"
       >
-        <span className="pl-2 font-mono text-sm text-slate">{p.id}</span>
+        <span className="pl-2 font-mono text-sm text-slate transition-colors group-hover:text-ember">
+          <span className="absolute inset-y-3 left-0 w-0.5 origin-center scale-y-0 rounded-full bg-ember transition-transform duration-300 ease-[var(--ease-forge)] group-hover:scale-y-100" aria-hidden="true" />
+          {p.id}
+        </span>
         <span className="min-w-0">
           <span className="flex flex-wrap items-center gap-2">
             <span className="font-display text-lg font-semibold group-hover:text-ember">{p.name}</span>
@@ -42,6 +53,6 @@ export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolea
         </span>
         <RatingPill rating={p.rating} className="mr-2" />
       </Link>
-    </li>
+    </motion.li>
   );
 }

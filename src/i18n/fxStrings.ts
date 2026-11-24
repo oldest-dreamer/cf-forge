@@ -38,5 +38,12 @@ export const FX = {
       bn: 'CF Forge-এর প্রতিটি সমাধান আপনার ব্রাউজারেই কম্পাইল হয়ে চলে।',
     },
   },
+  problemsPage: {
+    search: { en: 'Search by id, name or tag', bn: 'আইডি, নাম বা ট্যাগ দিয়ে খুঁজুন' },
+    bands: { en: 'Rating band', bn: 'রেটিং ধাপ' },
+    all: { en: 'All', bn: 'সব' },
+    shown: { en: 'problems shown', bn: 'টি প্রবলেম দেখানো হচ্ছে' },
+    none: { en: 'No problem matches. Try a tag name such as “dp”, or clear the search.', bn: 'কোনো প্রবলেম মেলেনি। “dp”-এর মতো ট্যাগের নাম লিখুন, বা খোঁজা মুছে দিন।' },
+  },
   tutorChip: { en: 'Tutor is online', bn: 'টিউটর অনলাইনে' },
 };

@@ -10,6 +10,7 @@ import { LADDERS } from '@/data/tags/ladders';
 import { PROBLEM_BY_ID, featuredForTag, problemsForTag } from '@/data/problems';
 import { PageHead } from '@/components/PageHead';
 import { ProblemRow } from '@/components/ProblemRow';
+import { CodeSlots } from '@/components/fx/CodeSlots';
 import { CodeBlock } from '@/components/CodeBlock';
 import { RatingPill } from '@/components/RatingPill';
 import { useAccount } from '@/lib/account';
@@ -152,14 +153,14 @@ export default function TagDetail() {
       {featured.length + rest.length > 0 && (
         <Section title={t(S.tags.guide.explained)}>
           <p className="mb-4 text-sm text-slate">
-            <span className="font-semibold text-ember tabular-nums">{num(featured.length + rest.length)}</span> {t(S.tags.guide.explainedGoal)}
+            <span className="font-display text-base font-semibold text-ember"><CodeSlots value={featured.length + rest.length} /></span> {t(S.tags.guide.explainedGoal)}
           </p>
           <ul className="border-t border-seam/70">
-            {featured.map((p) => (
-              <ProblemRow key={p.id} p={p} featured />
+            {featured.map((p, i) => (
+              <ProblemRow key={p.id} p={p} featured index={i} />
             ))}
-            {rest.map((p) => (
-              <ProblemRow key={p.id} p={p} />
+            {rest.map((p, i) => (
+              <ProblemRow key={p.id} p={p} index={featured.length + i} />
             ))}
           </ul>
         </Section>

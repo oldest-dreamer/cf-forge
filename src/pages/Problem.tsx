@@ -12,6 +12,7 @@ import { IoBlock } from '@/components/CodeBlock';
 import { RunPanel } from '@/components/RunPanel';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
+import { JellyRadio } from '@/components/fx/JellyRadio';
 import { ProblemStatusBadge, ProblemTracker } from '@/components/ProblemTracker';
 import { useTutorPage } from '@/lib/tutor';
 
@@ -84,35 +85,27 @@ function Solutions({ p }: { p: ProblemEntry }) {
 
   return (
     <div>
-      <div role="tablist" className="isolate flex gap-1 overflow-x-auto rounded-xl bg-iron p-1">
-        {p.solutions.map((x, i) => {
-          const on = x.id === s.id;
-          return (
-            <button
-              key={x.id}
-              role="tab"
-              aria-selected={on}
-              onClick={() => setSel(x.id)}
-              className={cn(
-                'relative shrink-0 rounded-lg px-3.5 py-2 text-left text-sm transition-colors',
-                on ? 'text-ash' : 'text-slate hover:text-ash',
-              )}
-            >
-              {on && (
-                <motion.span
-                  layoutId={`sol-${p.id}`}
-                  className="absolute inset-0 -z-10 rounded-lg bg-iron-2 ring-1 ring-seam"
-                  transition={{ type: 'spring', stiffness: 440, damping: 36 }}
-                />
-              )}
+      <JellyRadio<string>
+        role="tablist"
+        label={t(S.problem.parts.solutions)}
+        value={s.id}
+        onChange={setSel}
+        options={p.solutions.map((x, i) => ({
+          id: x.id,
+          label: (
+            <>
               <span className="block text-xs text-slate">
                 {i + 1}. {t(S.problem.kinds[x.kind])}
               </span>
               <span className="block font-medium">{t(x.title)}</span>
-            </button>
-          );
-        })}
-      </div>
+            </>
+          ),
+        }))}
+        className="flex gap-1 overflow-x-auto rounded-xl bg-iron p-1"
+        itemClassName="shrink-0 rounded-lg px-3.5 py-2 text-left text-sm"
+        pillClassName="rounded-lg bg-iron-2 ring-1 ring-seam"
+        activeText="text-ash"
+      />
 
       <AnimatePresence mode="wait">
         <motion.div
