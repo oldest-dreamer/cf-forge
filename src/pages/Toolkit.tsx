@@ -95,6 +95,26 @@ export default function Toolkit() {
                         </div>
                         <p className="prose-forge mt-2 text-ash/85">{t(e.summary)}</p>
                         <CodeBlock code={e.code} showLines={false} className="mt-3" />
+                        {e.explain && e.explain.length > 0 && (
+                          <div className="mt-4">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-ember">{t(COURSE.toolkit.explainTitle)}</h4>
+                            {e.explain.map((x, k) => (
+                              <p key={k} className="mt-1.5 text-ash/85">
+                                {t(x)}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                        {e.pitfalls && e.pitfalls.length > 0 && (
+                          <div className="mt-4 rounded-xl border border-seam bg-steel/40 p-3">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#f2c14e]">{t(COURSE.toolkit.pitfallsTitle)}</h4>
+                            <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-ash/80">
+                              {e.pitfalls.map((x, k) => (
+                                <li key={k}>{t(x)}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                         {e.notes?.map((n, k) => (
                           <p key={k} className="mt-2 text-sm text-slate">
                             {t(n)}

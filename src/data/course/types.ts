@@ -32,7 +32,7 @@ export type Lesson = {
   toolkit: string[];
 };
 
-export type ToolkitGroup = 'io' | 'basics' | 'math' | 'strings' | 'containers' | 'algorithms' | 'modern' | 'bits';
+export type ToolkitGroup = 'io' | 'basics' | 'math' | 'strings' | 'containers' | 'algorithms' | 'modern' | 'bits' | 'memory' | 'debug';
 
 export type ToolkitEntry = {
   id: string;
@@ -43,6 +43,10 @@ export type ToolkitEntry = {
   /** Time cost of the main operations, e.g. "O(log n) insert". */
   cost?: string;
   notes?: L[];
+  /** Longer plain-language explanation: what it is, why, when. */
+  explain?: L[];
+  /** Typical mistakes with this tool. */
+  pitfalls?: L[];
   /** Lesson that teaches this, if any. */
   lesson?: string;
 };

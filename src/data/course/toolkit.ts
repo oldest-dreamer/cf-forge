@@ -1,20 +1,23 @@
 import type { L } from '@/i18n/types';
 import type { ToolkitEntry, ToolkitGroup } from './types';
+import { TOOLKIT_EXPLAIN, TOOLKIT_EXTRA } from './toolkit2';
 
 const raw = String.raw;
 
 export const TOOLKIT_GROUPS: { id: ToolkitGroup; name: L }[] = [
   { id: 'io', name: { en: 'Input and output', bn: 'ইনপুট ও আউটপুট' } },
   { id: 'basics', name: { en: 'Language basics', bn: 'ভাষার মৌলিক বিষয়' } },
+  { id: 'memory', name: { en: 'Memory and structure', bn: 'মেমরি ও গঠন' } },
   { id: 'math', name: { en: 'Math', bn: 'গণিত' } },
   { id: 'strings', name: { en: 'Strings', bn: 'স্ট্রিং' } },
   { id: 'containers', name: { en: 'Containers', bn: 'কনটেইনার' } },
   { id: 'algorithms', name: { en: 'Algorithms', bn: 'অ্যালগরিদম' } },
   { id: 'modern', name: { en: 'Modern C++', bn: 'আধুনিক C++' } },
   { id: 'bits', name: { en: 'Bits', bn: 'বিট' } },
+  { id: 'debug', name: { en: 'Debugging', bn: 'ডিবাগিং' } },
 ];
 
-export const TOOLKIT: ToolkitEntry[] = [
+const BASE_TOOLKIT: ToolkitEntry[] = [
   // ── Input and output ─────────────────────────────────
   {
     id: 'io-basics',
@@ -583,5 +586,7 @@ int onesLL = __builtin_popcountll(x);
 int tz = __builtin_ctz(12);               // 2`,
   },
 ];
+
+export const TOOLKIT: ToolkitEntry[] = [...BASE_TOOLKIT, ...TOOLKIT_EXTRA].map((e) => ({ ...e, ...TOOLKIT_EXPLAIN[e.id] }));
 
 export const TOOLKIT_BY_ID: Record<string, ToolkitEntry> = Object.fromEntries(TOOLKIT.map((e) => [e.id, e]));

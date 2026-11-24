@@ -47,6 +47,8 @@ export const COURSE = {
       en: 'The pieces of C++ that keep showing up in solutions, each with a snippet you can copy. Problem pages link straight to the entry they use.',
       bn: 'C++-এর যে অংশগুলো সমাধানে বারবার আসে, প্রতিটির সঙ্গে কপি করার মতো ছোট কোড। প্রবলেম পাতাগুলো সরাসরি দরকারি অংশে লিংক করে।',
     },
+    explainTitle: { en: 'How it works', bn: 'কীভাবে কাজ করে' },
+    pitfallsTitle: { en: 'Common mistakes', bn: 'সাধারণ ভুল' },
     search: { en: 'Find in the toolkit', bn: 'টুলকিটে খুঁজুন' },
     noMatch: { en: 'Nothing matches that. Try a shorter word.', bn: 'কিছু মেলেনি। ছোট শব্দ দিয়ে চেষ্টা করুন।' },
     learnIt: { en: 'Learn it in', bn: 'শিখুন' },
