@@ -255,21 +255,25 @@ for (long long x : A) {
 export const ternarySearchGuide: TagGuide = {
   slug: 'ternary-search',
   intro: [
-    L('Ternary search finds the minimum of a function that decreases and then increases (unimodal). Compare f at two interior points; the side with the larger value cannot contain the minimum and is discarded.',
-      'টার্নারি সার্চ এমন একটি ফাংশনের সর্বনিম্ন খোঁজে যা কমে তারপর বাড়ে (ইউনিমোডাল)। দুটি ভেতরের বিন্দুতে f তুলনা করো; বড় মানের দিকটিতে সর্বনিম্ন থাকতে পারে না, তাই বাদ দাও।'),
-    L('On real numbers, run a fixed number of iterations (100 is plenty). On integers, stop when the range is small and check the remaining values directly.',
-      'বাস্তব সংখ্যায় নির্দিষ্ট সংখ্যক পুনরাবৃত্তি চালাও (১০০ যথেষ্ট)। পূর্ণসংখ্যায় পরিসর ছোট হলে থেমে বাকি মানগুলো সরাসরি দেখো।'),
+    L('Ternary search finds the minimum of a function that decreases and then increases (unimodal). Compare f at two interior points; the side with the larger value cannot contain the minimum and is discarded. Each round keeps two thirds of the interval.',
+      'টার্নারি সার্চ এমন একটি ফাংশনের সর্বনিম্ন খোঁজে যা কমে তারপর বাড়ে (ইউনিমোডাল)। দুটি ভেতরের বিন্দুতে f তুলনা করো; বড় মানের দিকটিতে সর্বনিম্ন থাকতে পারে না, তাই বাদ দাও। প্রতিটি রাউন্ডে ব্যবধানের দুই-তৃতীয়াংশ থাকে।'),
+    L('On real numbers, run a fixed number of iterations (100 is plenty). On integers, stop when the range is two or three wide and check the survivors directly. The same idea finds a maximum of a function that rises and then falls.',
+      'বাস্তব সংখ্যায় নির্দিষ্ট সংখ্যক পুনরাবৃত্তি চালাও (১০০ যথেষ্ট)। পূর্ণসংখ্যায় পরিসর দুই-তিন চওড়া হলে থেমে বেঁচে থাকাগুলো সরাসরি যাচাই করো। একই ধারণায় এমন ফাংশনের সর্বোচ্চও মেলে যা আগে বাড়ে, পরে কমে।'),
+    L('What you really need is convexity (or concavity), not just “one valley”: a convex function may be flat only at its minimum, and that is exactly what makes the comparison safe. A function with a flat stretch away from the minimum — a ceiling, a floor, equal values in a sorted array — can fool the search.',
+      'আসলে লাগে উত্তলতা (বা অবতলতা), শুধু “একটি উপত্যকা” নয়: উত্তল ফাংশন শুধু ন্যূনতমেই সমতল হতে পারে, আর ঠিক এতেই তুলনা নিরাপদ হয়। ন্যূনতম থেকে দূরে সমতল অংশ আছে এমন ফাংশন — সিলিং, ফ্লোর, সর্টেড অ্যারের সমান মান — সার্চকে ধোঁকা দিতে পারে।'),
   ],
   recognize: [
     L('“Choose x to minimise …” where moving x too far in either direction makes things worse.', '“x বাছো যাতে … সর্বনিম্ন হয়” যেখানে x-কে যেকোনো দিকে বেশি সরালে খারাপ হয়।'),
-    L('A convex cost, such as a sum of |aᵢ − x| or a maximum of linear functions.', 'একটি উত্তল খরচ, যেমন |aᵢ − x|-এর যোগফল বা রৈখিক ফাংশনের সর্বোচ্চ।'),
+    L('A convex cost, such as a sum of |aᵢ − x|, a sum of max(0, x − aᵢ), or a maximum of linear functions.', 'একটি উত্তল খরচ, যেমন |aᵢ − x|-এর যোগফল, max(০, x − aᵢ)-এর যোগফল, বা রৈখিক ফাংশনের সর্বোচ্চ।'),
+    L('A “meeting point”, “best position” or “best moment” with a cost that grows in both directions.', '“মিলনবিন্দু”, “সেরা অবস্থান” বা “সেরা মুহূর্ত” যার খরচ দুই দিকেই বাড়ে।'),
+    L('The statement asks for the minimum of a maximum, or a maximum of a minimum, over a continuous or very large integer range.', 'প্রবলেম একটি ক্রমাগত বা খুব বড় পূর্ণসংখ্যা পরিসরে সর্বোচ্চের ন্যূনতম, বা ন্যূনতমের সর্বোচ্চ চায়।'),
   ],
   patterns: [
     {
       name: L('Ternary search on a real number', 'বাস্তব সংখ্যায় টার্নারি সার্চ'),
       explain: [
-        L('Each iteration keeps two thirds of the interval, so 100 iterations shrink it by (2/3)¹⁰⁰, far below any required precision.',
-          'প্রতিটি পুনরাবৃত্তি ব্যবধানের দুই-তৃতীয়াংশ রাখে, তাই ১০০টি পুনরাবৃত্তি একে (২/৩)¹⁰⁰ গুণ ছোট করে, যেকোনো প্রয়োজনীয় নির্ভুলতার অনেক নিচে।'),
+        L('Each iteration keeps two thirds of the interval, so 100 iterations shrink it by (2/3)¹⁰⁰, far below any required precision. Print the midpoint (or f at the midpoint).',
+          'প্রতিটি পুনরাবৃত্তি ব্যবধানের দুই-তৃতীয়াংশ রাখে, তাই ১০০টি পুনরাবৃত্তি একে (২/৩)¹⁰⁰ গুণ ছোট করে, যেকোনো প্রয়োজনীয় নির্ভুলতার অনেক নিচে। মধ্যবিন্দু (বা সেখানে f) প্রিন্ট করো।'),
       ],
       code: raw`double lo = -1e4, hi = 1e4;
 for (int it = 0; it < 100; it++) {
@@ -277,16 +281,91 @@ for (int it = 0; it < 100; it++) {
     if (f(m1) < f(m2)) hi = m2; else lo = m1;
 }
 printf("%.10f\n", f((lo + hi) / 2));`,
-      example: { problem: '578C', text: L('Weakness and Poorness: the weakness of a − x is convex in x; ternary search x, computing the weakness with maximum-subarray sums.', 'Weakness and Poorness: a − x-এর দুর্বলতা x-এ উত্তল; x-এ টার্নারি সার্চ করো, সর্বোচ্চ-সাবঅ্যারে যোগফল দিয়ে দুর্বলতা হিসাব করে।') },
+      example: { problem: '578C', text: L('Weakness and Poorness: the weakness of a − x is convex in x; ternary search x, computing the weakness with maximum-subarray sums. Meeting on the Line (1730B) is the same loop on a maximum of V shapes.', 'Weakness and Poorness: a − x-এর দুর্বলতা x-এ উত্তল; x-এ টার্নারি সার্চ করো, সর্বোচ্চ-সাবঅ্যারে যোগফল দিয়ে দুর্বলতা হিসাব করে। Meeting on the Line (1730B) একই লুপ, V আকৃতির সর্বোচ্চের ওপর।') },
+    },
+    {
+      name: L('Integer ternary search with the “equal” rule', 'পূর্ণসংখ্যায় টার্নারি সার্চ, “সমান” নিয়মসহ'),
+      explain: [
+        L('For a convex f on integers: if f(m1) < f(m2) the minimum is left of m2; if f(m1) > f(m2) it is right of m1; if they are equal it lies between them. Stop when hi − lo ≤ 2 and scan. This is safe precisely because a convex function repeats a value only around its minimum.',
+          'পূর্ণসংখ্যায় উত্তল f-এর জন্য: f(m1) < f(m2) হলে ন্যূনতম m2-র বাঁয়ে; f(m1) > f(m2) হলে m1-এর ডানে; সমান হলে তাদের মাঝে। hi − lo ≤ ২ হলে থামো আর স্ক্যান করো। এটি নিরাপদ কারণ উত্তল ফাংশন কোনো মান পুনরাবৃত্তি করে কেবল ন্যূনতমের আশেপাশেই।'),
+      ],
+      code: raw`long long lo = 0, hi = N;
+while (hi - lo > 2) {
+    long long m1 = lo + (hi - lo) / 3, m2 = hi - (hi - lo) / 3;
+    long long f1 = f(m1), f2 = f(m2);
+    if (f1 < f2) hi = m2 - 1;
+    else if (f1 > f2) lo = m1 + 1;
+    else lo = m1, hi = m2;       // equal: the minimum is between
+}
+long long best = LLONG_MAX;
+for (long long x = lo; x <= hi; x++) best = min(best, f(x));`,
+      example: { problem: '439D', text: L('Devu and his Brother: the cost of lifting every a and lowering every b to a threshold x is convex; ternary-search x, evaluating f in O(n + m). The same problem also has a greedy pairing and a prefix-sum solution.', 'Devu and his Brother: প্রতিটি a তুলে আর প্রতিটি b নামিয়ে সীমা x-এ আনার খরচ উত্তল; x-এ টার্নারি সার্চ করো, f O(n + m)-এ মূল্যায়ন করে। একই প্রবলেমে গ্রিডি জোড়া মেলানো আর প্রিফিক্স সামের সমাধানও আছে।') },
+    },
+    {
+      name: L('Search the clean relaxation, not the ceiling', 'সিলিং নয়, পরিষ্কার শিথিলীকরণে খোঁজো'),
+      explain: [
+        L('A ceiling or floor turns a smooth curve into steps; steps away from the minimum break the ternary comparison. Turn the condition into an inequality on a smooth function first — for example ⌈d/(x+1)⌉ ≤ n − x becomes d ≤ (n − x)(x + 1), a parabola — and search that.',
+          'সিলিং বা ফ্লোর মসৃণ রেখাকে ধাপে বদলায়; ন্যূনতম থেকে দূরের ধাপ টার্নারি তুলনা ভেঙে দেয়। আগে শর্তটিকে মসৃণ ফাংশনের অসমতায় বদলাও — যেমন ⌈d/(x+১)⌉ ≤ n − x হয় d ≤ (n − x)(x + ১), একটি প্যারাবোলা — তারপর সেটি খোঁজো।'),
+      ],
+      code: raw`// is there an integer x >= 0 with x + ceil(d / (x + 1)) <= n ?
+auto h = [&](long long x) { return (n - x) * (x + 1); };   // concave
+// ternary-search the maximum of h, or just test x = (n - 1) / 2
+bool yes = max(h((n - 1) / 2), h((n - 1) / 2 + 1)) >= d;`,
+      example: { problem: '1288A', text: L('Deadline: the optimised running time is x + ⌈d/(x+1)⌉. Rewrite the “can I finish in n days” test as a parabola and the whole problem is O(1).', 'Deadline: অপ্টিমাইজ করা চলার সময় x + ⌈d/(x+১)⌉। “n দিনে শেষ করা যাবে কি” পরীক্ষাটিকে প্যারাবোলায় লিখলেই পুরো প্রবলেম O(১)।') },
+    },
+    {
+      name: L('A search inside a search', 'সার্চের ভেতরে সার্চ'),
+      explain: [
+        L('When the answer is a width and the check is “does some position work?”, binary-search the width and ternary-search the position. The position cost must be convex; the width check must be monotone (a wider window never costs more).',
+          'উত্তর যখন একটি প্রস্থ আর পরীক্ষা “কোনো অবস্থান চলে কি?”, প্রস্থে বাইনারি সার্চ আর অবস্থানে টার্নারি সার্চ করো। অবস্থানের খরচ উত্তল হতে হবে; প্রস্থের পরীক্ষা একঘাতিক হতে হবে (চওড়া জানালা কখনো বেশি খরচে আসে না)।'),
+      ],
+      code: raw`// cost(L, D): moves needed to squeeze all values into [L, L + D]
+auto feasible = [&](long long D) {
+    long long lo = mn, hi = mx;              // ternary over the window start
+    while (hi - lo > 2) { /* compare cost(m1, D) and cost(m2, D) */ }
+    long long best = LLONG_MAX;
+    for (long long L = lo; L <= hi; L++) best = min(best, cost(L, D));
+    return best <= k;
+};
+// then: binary search the smallest D with feasible(D)`,
+      example: { problem: '1244E', text: L('Minimizing Difference: binary-search the final width D; the cheapest window start for a given D is found by ternary search with prefix sums. A greedy that shrinks the cheaper end solves the same problem without any search.', 'Minimizing Difference: চূড়ান্ত প্রস্থ D বাইনারি সার্চে খোঁজো; নির্দিষ্ট D-র সস্তা জানালা-শুরু প্রিফিক্স সামসহ টার্নারি সার্চে মেলে। সস্তা প্রান্ত ছোট করা একটি গ্রিডি কোনো সার্চ ছাড়াই একই প্রবলেম সমাধান করে।') },
+    },
+    {
+      name: L('A convex penalty as a feasibility test', 'সম্ভাব্যতা পরীক্ষা হিসেবে উত্তল জরিমানা'),
+      explain: [
+        L('To ask “is there a p with several linear constraints?”, define the total violation g(p) = Σ max(0, constraintᵢ(p)). Each term is convex, so g is too, and the answer is yes exactly when min g = 0. Ternary search finds min g without solving the inequalities by hand.',
+          '“কয়েকটি রৈখিক শর্ত মানে এমন p আছে কি?” জানতে মোট লঙ্ঘন g(p) = Σ max(০, শর্তᵢ(p)) সংজ্ঞায়িত করো। প্রতিটি পদ উত্তল, তাই g-ও উত্তল, আর উত্তর হ্যাঁ ঠিক তখনই যখন min g = ০। টার্নারি সার্চ হাতে অসমতা সমাধান না করেই min g খুঁজে দেয়।'),
+      ],
+      code: raw`auto g = [&](long long p) {            // shortage of red + shortage of blue
+    return max(0LL, p * a + (k - p) * b - x) + max(0LL, p * b + (k - p) * a - y);
+};
+// ternary-search p in [0, k]; k sets are possible iff min g == 0`,
+      example: { problem: '1538G', text: L('Gift Set: for a fixed number of sets k the split p is checked either by interval algebra or by ternary-searching the penalty; the number of sets itself is binary-searched.', 'Gift Set: নির্দিষ্ট সেট-সংখ্যা k-র জন্য ভাগ p হয় ব্যবধান-বীজগণিতে নয়তো জরিমানার টার্নারি সার্চে যাচাই করা হয়; সেটের সংখ্যা নিজে বাইনারি সার্চে খোঁজা হয়।') },
+    },
+    {
+      name: L('Sometimes a maximum of V shapes has a formula', 'কখনো V আকৃতির সর্বোচ্চের সূত্র থাকে'),
+      explain: [
+        L('A maximum of terms |x − cᵢ| + tᵢ is max(B + x, A − x) with A = max(cᵢ + tᵢ) and B = max(tᵢ − cᵢ). Its minimum is where the two lines meet. Learn to recognise this: ternary search is the safe fallback, the formula is the clean finish.',
+          '|x − cᵢ| + tᵢ পদগুলোর সর্বোচ্চ হলো max(B + x, A − x), যেখানে A = max(cᵢ + tᵢ) আর B = max(tᵢ − cᵢ)। এর ন্যূনতম যেখানে দুই রেখা মেলে। এটি চিনতে শেখো: টার্নারি সার্চ নিরাপদ বিকল্প, সূত্রটি পরিষ্কার সমাপ্তি।'),
+      ],
+      code: raw`long long A = LLONG_MIN, B = LLONG_MIN;
+for (int i = 0; i < n; i++) A = max(A, t[i] + c[i]), B = max(B, t[i] - c[i]);
+double best_x = (A - B) / 2.0;      // where B + x == A - x`,
+      example: { problem: '1301B', text: L('Motarack’s Birthday: the best replacement k is the midpoint of the smallest and largest known neighbour. Meeting on the Line (1730B) is the same shape with real positions.', 'Motarack’s Birthday: সেরা প্রতিস্থাপন k হলো সবচেয়ে ছোট আর সবচেয়ে বড় জানা প্রতিবেশীর মধ্যবিন্দু। Meeting on the Line (1730B) একই আকার, বাস্তব অবস্থানসহ।') },
     },
   ],
   mistakes: [
-    L('Using it on a function with flat regions or several valleys.', 'সমতল অংশ বা একাধিক উপত্যকাসহ ফাংশনে ব্যবহার।'),
+    L('Using it on a function with flat regions away from the minimum, or with several valleys.', 'ন্যূনতম থেকে দূরে সমতল অংশ বা একাধিক উপত্যকাসহ ফাংশনে ব্যবহার।'),
     L('Stopping too early on integers: check the last few candidates by hand.', 'পূর্ণসংখ্যায় খুব আগে থামা: শেষ কয়েকটি সম্ভাব্য মান নিজে দেখো।'),
+    L('Searching a function with ceilings or floors directly instead of a smooth relaxation of the condition.', 'শর্তের মসৃণ শিথিলীকরণের বদলে সিলিং বা ফ্লোরসহ ফাংশনে সরাসরি খোঁজা।'),
+    L('Running a ternary search over sorted values with duplicates: equal values then are not the minimum. Deduplicate first.', 'ডুপ্লিকেটসহ সর্টেড মানের ওপর টার্নারি সার্চ: তখন সমান মান ন্যূনতম নয়। আগে ডুপ্লিকেট সরাও।'),
+    L('Too few iterations on a large real range, or int overflow in the cost function.', 'বড় বাস্তব পরিসরে কম পুনরাবৃত্তি, বা খরচ ফাংশনে int উপচে পড়া।'),
   ],
   plan: [
     L('Prove convexity before using it; otherwise use binary search on a derivative-like condition.', 'ব্যবহারের আগে উত্তলতা প্রমাণ করো; না হলে ডেরিভেটিভ-সদৃশ শর্তে বাইনারি সার্চ করো।'),
-    L('Solve 3 problems with real-valued ternary search.', 'বাস্তব-মানের টার্নারি সার্চ দিয়ে ৩টি প্রবলেম করো।'),
+    L('Warm up on Deadline (1288A) and Motarack’s Birthday (1301B): both have a search and a formula.', 'Deadline (1288A) আর Motarack’s Birthday (1301B) দিয়ে শুরু করো: দুটিতেই সার্চ আর সূত্র দুই-ই আছে।'),
+    L('Do Meeting on the Line (1730B), then Devu and his Brother (439D) for integer ternary search.', 'Meeting on the Line (1730B), তারপর পূর্ণসংখ্যার টার্নারি সার্চের জন্য Devu and his Brother (439D) করো।'),
+    L('Move to nested searches: Minimizing Difference (1244E) and Gift Set (1538G).', 'নেস্টেড সার্চে যাও: Minimizing Difference (1244E) আর Gift Set (1538G)।'),
   ],
 };
 
