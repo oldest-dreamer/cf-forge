@@ -422,3 +422,55 @@
     transform: none;
   }
 }
+
+/* ── Fluid feel everywhere: press feedback, link underlines, smooth scroll ─ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  button:not(:disabled),
+  [role='tab'],
+  [role='button'] {
+    transition: transform 160ms var(--ease-forge), background-color 200ms var(--ease-forge),
+      border-color 200ms var(--ease-forge), color 200ms var(--ease-forge), opacity 200ms var(--ease-forge);
+  }
+  button:not(:disabled):active,
+  [role='button']:active {
+    transform: scale(0.97);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 3px;
+    transition: outline-offset 160ms var(--ease-forge);
+  }
+  /* inline text links grow an underline from the left */
+  .prose a,
+  .md a {
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 280ms var(--ease-forge), color 200ms var(--ease-forge);
+  }
+  .prose a:hover,
+  .md a:hover {
+    background-size: 100% 1px;
+  }
+  input,
+  textarea,
+  select {
+    transition: border-color 200ms var(--ease-forge), box-shadow 220ms var(--ease-forge);
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(240, 160, 75, 0.14);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  button:not(:disabled):active,
+  [role='button']:active {
+    transform: none;
+  }
+}

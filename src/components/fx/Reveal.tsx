@@ -13,17 +13,20 @@ export function Reveal({
   y = 16,
   className,
   as = 'div',
+  id,
 }: {
   children: ReactNode;
   index?: number;
   y?: number;
   className?: string;
-  as?: 'div' | 'li' | 'section';
+  as?: 'div' | 'li' | 'section' | 'footer';
+  id?: string;
 }) {
   const reduce = useReducedMotion();
   const M = motion[as];
   return (
     <M
+      id={id}
       className={className}
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}

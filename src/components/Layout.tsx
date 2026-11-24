@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { TutorButton, TutorPanel } from './TutorPanel';
+import { ScrollProgress } from './fx/ScrollProgress';
+import { CursorGlow } from './fx/CursorGlow';
 
 /** Keeps the page that is leaving on screen during its exit animation. */
 function FrozenOutlet() {
@@ -19,7 +21,7 @@ export function Layout() {
     if (location.hash) {
       document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
   }, [location.pathname, location.hash]);
 
@@ -31,6 +33,8 @@ export function Layout() {
       >
         Skip to content
       </a>
+      <ScrollProgress />
+      <CursorGlow />
       <Header />
       <AnimatePresence mode="wait" initial={false}>
         <motion.main

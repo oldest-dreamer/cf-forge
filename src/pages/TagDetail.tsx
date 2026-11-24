@@ -16,14 +16,15 @@ import { RatingPill } from '@/components/RatingPill';
 import { useAccount } from '@/lib/account';
 import { problemKey } from '@/lib/cf';
 import NotFound from './NotFound';
+import { Reveal } from '@/components/fx/Reveal';
 import { useTutorPage } from '@/lib/tutor';
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} className="mt-14 scroll-mt-32">
+    <Reveal as="section" id={id} y={22} className="mt-14 scroll-mt-32">
       <h2 className="text-2xl font-semibold">{title}</h2>
       <div className="mt-4">{children}</div>
-    </section>
+    </Reveal>
   );
 }
 

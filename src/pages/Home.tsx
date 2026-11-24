@@ -158,7 +158,7 @@ export default function Home() {
       </section>
       </div>
 
-      <section className="mx-auto max-w-6xl px-5">
+      <Reveal as="section" className="mx-auto max-w-6xl px-5">
         <dl className="grid grid-cols-3 gap-4 border-t border-seam/60 pt-6">
           {stats.map((s) => (
             <div key={s.label.en} className="flex flex-col">
@@ -169,12 +169,12 @@ export default function Home() {
             </div>
           ))}
         </dl>
-      </section>
+      </Reveal>
 
-      <section className="mx-auto max-w-6xl px-5 pb-14 pt-12">
+      <Reveal as="section" className="mx-auto max-w-6xl px-5 pb-14 pt-12">
         <RankForge />
         <p className="mt-1 text-sm text-slate">{t(S.home.ladderCaption)}</p>
-      </section>
+      </Reveal>
 
       <section className="border-y border-seam/60 bg-iron/40">
         <div className="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">

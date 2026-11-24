@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { Reveal } from '@/components/fx/Reveal';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { CheckCircle2, ExternalLink } from 'lucide-react';
@@ -38,13 +39,13 @@ function useActivePart() {
 function Part({ id, n, children }: { id: ProblemPart; n: number; children: ReactNode }) {
   const { t, num } = useI18n();
   return (
-    <section id={id} className="scroll-mt-24 border-t border-seam/70 pt-8">
+    <Reveal as="section" id={id} y={22} className="scroll-mt-24 border-t border-seam/70 pt-8">
       <h2 className="flex items-baseline gap-3 text-2xl font-semibold">
         <span className="font-display text-base font-medium text-slate tabular-nums">{num(n)}</span>
         {t(S.problem.parts[id])}
       </h2>
       <div className="mt-4">{children}</div>
-    </section>
+    </Reveal>
   );
 }
 
