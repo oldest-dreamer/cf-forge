@@ -43,7 +43,37 @@ const only = process.argv.slice(2);
 let bad = 0;
 let runs = 0;
 for (const p of PROBLEMS) {
-  if (!p.interactive || (only.length && !only.includes(p.id))) continue;
+  if (only.length && !only.includes(p.id)) continue;
+  if (!p.interactive) {
+    // Ordinary problems: compile every accepted solution in the browser toolchain and run samples + tests.
+    if (!only.length) continue;
+    console.log(`${p.id} ${p.name}`);
+    const sameTokens = (a, b) => {
+      const x = a.trim().split(/\s+/), y = b.trim().split(/\s+/);
+      if (x.length !== y.length) return false;
+      return x.every((t, i) => t === y[i] || (!isNaN(+t) && !isNaN(+y[i]) && Math.abs(+t - +y[i]) <= 1e-6 * Math.max(1, Math.abs(+y[i]))));
+    };
+    for (const s of p.solutions.filter((x) => x.accepted)) {
+      let mod;
+      try {
+        mod = await compile(s.code);
+      } catch (e) {
+        bad++;
+        console.log(`  ✗ ${s.id} does not compile in the browser toolchain: ${String(e).slice(0, 200)}`);
+        continue;
+      }
+      for (const c of [...p.samples, ...p.tests]) {
+        runs++;
+        const r = await runModule(mod, c.input + '\n', false);
+        const got = r.status === 'ok' ? r.stdout : 'RUNTIME ' + r.status + ' ' + (r.error ?? '');
+        if (!sameTokens(got, c.output)) {
+          bad++;
+          console.log(`  ✗ ${s.id} on ${JSON.stringify(c.input).slice(0, 40)}: got ${got.trim().slice(0, 40)} expected ${c.output.slice(0, 40)}`);
+        }
+      }
+    }
+    continue;
+  }
   console.log(`${p.id} ${p.name}`);
   const factory = JUDGES[p.id];
   const data = [...p.samples.map((s) => s.input), ...p.tests.map((t) => t.input)];
