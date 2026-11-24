@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int t = r() % 3 + 1; printf("%d\n", t); while (t--) { int n = r() % 9 + 2; std::vector<std::pair<int,int>> e; for (int i = 2; i <= n; i++) { int a = r() % (i - 1) + 1; if (r() % 2) e.push_back({a, i}); else e.push_back({i, a}); } std::shuffle(e.begin(), e.end(), r); printf("%d\n", n); for (auto [a, b] : e) printf("%d %d\n", a, b); } }

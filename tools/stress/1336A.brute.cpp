@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { int n, k; cin >> n >> k; vector<vector<int>> adj(n + 1); for (int i = 0; i < n - 1; i++) { int a, b; cin >> a >> b; adj[a].push_back(b); adj[b].push_back(a); } vector<int> par(n + 1, 0), order = {1}; par[1] = -1; for (size_t i = 0; i < order.size(); i++) for (int u : adj[order[i]]) if (u != par[order[i]]) { par[u] = order[i]; order.push_back(u); } long long best = 0; for (int mask = 0; mask < (1 << n); mask++) { if (__builtin_popcount(mask) != k) continue; long long h = 0; for (int v = 1; v <= n; v++) if (mask >> (v - 1) & 1) for (int u = par[v]; u != -1; u = par[u]) if (!(mask >> (u - 1) & 1)) h++; best = max(best, h); } cout << best << "\n"; }
