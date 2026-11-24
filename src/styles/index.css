@@ -235,3 +235,190 @@
     background: none;
   }
 }
+
+/* ── Polish pass: ambient light, spotlight surfaces, tactile buttons ───── */
+@layer components {
+  .dot-grid {
+    background-image: radial-gradient(rgba(228, 232, 239, 0.09) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.5;
+    will-change: transform;
+  }
+  .aurora-a {
+    width: 34rem;
+    height: 26rem;
+    left: -8rem;
+    top: -10rem;
+    background: radial-gradient(closest-side, rgba(240, 160, 75, 0.38), transparent);
+    animation: drift-a 22s ease-in-out infinite alternate;
+  }
+  .aurora-b {
+    width: 30rem;
+    height: 30rem;
+    right: -10rem;
+    top: 18%;
+    background: radial-gradient(closest-side, rgba(91, 140, 255, 0.26), transparent);
+    animation: drift-b 28s ease-in-out infinite alternate;
+  }
+  .aurora-c {
+    width: 26rem;
+    height: 22rem;
+    left: 30%;
+    bottom: -12rem;
+    background: radial-gradient(closest-side, rgba(46, 196, 182, 0.2), transparent);
+    animation: drift-c 32s ease-in-out infinite alternate;
+  }
+
+  /* Spotlight surface: border and fill brighten around the pointer */
+  .spot {
+    position: relative;
+    isolation: isolate;
+    background: color-mix(in oklab, var(--color-iron) 70%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 220ms var(--ease-forge), border-color 220ms var(--ease-forge);
+  }
+  .spot::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(240, 160, 75, 0.2), transparent 65%);
+    opacity: 0;
+    transition: opacity 260ms var(--ease-forge);
+    pointer-events: none;
+  }
+  .spot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgba(240, 160, 75, 0.85), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 260ms var(--ease-forge);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .spot:hover {
+      transform: translateY(-2px);
+    }
+    .spot:hover::before,
+    .spot:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* A slow ember arc travelling round a card's border */
+  .border-beam {
+    position: relative;
+  }
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--ring-angle), transparent 0deg, transparent 300deg, rgba(240, 160, 75, 0.95) 340deg, transparent 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ring-spin 7s linear infinite;
+    pointer-events: none;
+  }
+
+  /* Buttons: press scale, lift, a light sweep on hover */
+  .btn-primary {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 180ms var(--ease-forge), background-color 180ms var(--ease-forge), box-shadow 220ms var(--ease-forge);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+    transform: translateX(-120%);
+  }
+  @media (hover: hover) {
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px -14px rgba(240, 160, 75, 0.7);
+    }
+    .btn-primary:hover::after {
+      transform: translateX(120%);
+      transition: transform 650ms var(--ease-forge);
+    }
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+  }
+  .btn-icon-shift > svg {
+    transition: transform 200ms var(--ease-forge);
+  }
+  .btn-icon-shift:hover > svg {
+    transform: translateX(3px);
+  }
+
+  .float-y {
+    animation: float-y 6s ease-in-out infinite;
+  }
+  .pulse-dot {
+    animation: pulse-dot 2s ease-out infinite;
+  }
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(8rem, 5rem, 0) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-7rem, 6rem, 0) scale(0.9);
+  }
+}
+@keyframes drift-c {
+  to {
+    transform: translate3d(6rem, -4rem, 0) scale(1.12);
+  }
+}
+@keyframes float-y {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(63, 185, 80, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob,
+  .border-beam::before,
+  .float-y,
+  .pulse-dot {
+    animation: none !important;
+  }
+  .spot:hover,
+  .btn-primary:hover,
+  .btn-primary:active {
+    transform: none;
+  }
+}

@@ -1,7 +1,7 @@
 import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Check, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { authClient, safeNext } from '@/lib/auth';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
@@ -12,6 +12,8 @@ import { JellyRadio } from '@/components/fx/JellyRadio';
 import { LiveCode } from '@/components/fx/LiveCode';
 import { ShinyText } from '@/components/fx/ShinyText';
 import { FX } from '@/i18n/fxStrings';
+import { UI } from '@/i18n/uiStrings';
+import { Aurora } from '@/components/fx/Aurora';
 import { cn } from '@/lib/cn';
 
 type Mode = 'signin' | 'signup';
@@ -83,7 +85,50 @@ function Field({
 }
 
 const inputCls =
-  'w-full rounded-xl border border-seam bg-steel/70 px-3.5 py-2.5 text-ash placeholder:text-slate/60 transition-colors focus:border-ember/70 focus:outline-none aria-[invalid=true]:border-[#ff8a80]/70';
+  'w-full rounded-xl border border-seam bg-steel/70 px-3.5 py-2.5 text-ash placeholder:text-slate/60 transition-[border-color,box-shadow] duration-200 focus:border-ember/70 focus:shadow-[0_0_0_4px_rgba(240,160,75,0.14)] focus:outline-none aria-[invalid=true]:border-[#ff8a80]/70';
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+/** Entrance choreography: each block lifts 14px and fades, 60ms apart. */
+const rise = (i: number) => ({
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, ease: EASE, delay: 0.05 + i * 0.06 },
+});
+
+/** 0 = too short, 1..3 = okay/good/strong. Length plus character variety. */
+function strengthOf(pw: string): number {
+  if (pw.length < 8) return 0;
+  let v = 0;
+  if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) v++;
+  if (/\d/.test(pw)) v++;
+  if (/[^A-Za-z0-9]/.test(pw)) v++;
+  if (pw.length >= 12) v++;
+  return Math.min(3, Math.max(1, v));
+}
+
+function StrengthMeter({ pw }: { pw: string }) {
+  const { t } = useI18n();
+  if (!pw) return null;
+  const lvl = strengthOf(pw);
+  const colors = ['#ff8a80', '#f0a04b', '#2ec4b6', '#3fb950'];
+  return (
+    <div className="mt-2 flex items-center gap-2" aria-live="polite">
+      <div className="flex flex-1 gap-1">
+        {[1, 2, 3].map((i) => (
+          <span key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-seam/70">
+            <span
+              className="block h-full origin-left rounded-full transition-transform duration-300"
+              style={{ background: colors[lvl], transform: `scaleX(${lvl >= i ? 1 : 0})`, transitionTimingFunction: 'cubic-bezier(0.22,1,0.36,1)' }}
+            />
+          </span>
+        ))}
+      </div>
+      <span className="w-16 text-right text-xs" style={{ color: colors[lvl] }}>
+        {t(UI.auth.strength[lvl])}
+      </span>
+    </div>
+  );
+}
 
 export default function Auth({ mode }: { mode: Mode }) {
   const { t } = useI18n();
@@ -98,6 +143,7 @@ export default function Auth({ mode }: { mode: Mode }) {
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [busy, setBusy] = useState<'email' | 'google' | null>(null);
+  const [done, setDone] = useState(false);
   const [fieldErr, setFieldErr] = useState<{ name?: L; email?: L; password?: L }>({});
   const [formErr, setFormErr] = useState<L | null>(params.get('error') ? S.auth.errors.google : null);
 
@@ -134,7 +180,8 @@ export default function Auth({ mode }: { mode: Mode }) {
         setFormErr(toMessage(res.error));
         return;
       }
-      navigate(next, { replace: true });
+      setDone(true);
+      window.setTimeout(() => navigate(next, { replace: true }), 450);
     } catch (err) {
       setFormErr(toMessage(err));
     } finally {
@@ -166,18 +213,26 @@ export default function Auth({ mode }: { mode: Mode }) {
   const switchTo = isUp ? '/login' : '/signup';
 
   return (
-    <div className="grain flex min-h-dvh">
+    <div className="grain relative flex min-h-dvh overflow-hidden">
+      <Aurora />
       {/* Form column */}
-      <div className="flex w-full flex-col px-5 py-6 lg:w-[30rem] lg:shrink-0 lg:border-r lg:border-seam/60 lg:px-12">
-        <div className="flex items-center justify-between">
+      <div className="relative flex w-full flex-col px-5 py-6 lg:w-[32rem] lg:shrink-0 lg:px-10">
+        <motion.div {...rise(0)} className="flex items-center justify-between">
           <span className="flex items-center gap-2.5 font-display text-lg font-semibold">
             <Logo className="size-7" />
             CF Forge
           </span>
           <LangToggle />
-        </div>
+        </motion.div>
 
-        <div className="my-auto py-10">
+        <motion.div
+          {...rise(1)}
+          className="border-beam relative my-auto rounded-3xl border border-white/[0.07] bg-iron/60 p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:p-8"
+        >
+          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-ember/30 bg-ember/10 px-3 py-1 text-xs text-ember">
+            <span className="pulse-dot size-1.5 rounded-full bg-[#3fb950]" />
+            {t(isUp ? UI.auth.badgeUp : UI.auth.badgeIn)}
+          </span>
           <AnimatePresence mode="wait" initial={false}>
             <motion.h1
               key={mode}
@@ -209,8 +264,8 @@ export default function Auth({ mode }: { mode: Mode }) {
           <button
             type="button"
             onClick={onGoogle}
-            disabled={busy !== null}
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-ash px-4 py-3 font-medium text-steel transition-[transform,background-color] duration-200 hover:bg-white active:scale-[0.99] disabled:opacity-70"
+            disabled={busy !== null || done}
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-ash px-4 py-3 font-medium text-steel btn-primary hover:bg-white disabled:opacity-70"
           >
             {busy === 'google' ? <Loader2 size={18} className="animate-spin" /> : <GoogleMark />}
             {t(busy === 'google' ? S.auth.redirecting : S.auth.google)}
@@ -288,6 +343,7 @@ export default function Auth({ mode }: { mode: Mode }) {
                   {showPw ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
+              {isUp && <StrengthMeter pw={password} />}
             </Field>
 
             <AnimatePresence>
@@ -307,11 +363,11 @@ export default function Auth({ mode }: { mode: Mode }) {
 
             <button
               type="submit"
-              disabled={busy !== null}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-ember px-4 py-3 font-medium text-steel transition-[transform,background-color] duration-200 hover:bg-[#f5b46a] active:scale-[0.99] disabled:opacity-70"
+              disabled={busy !== null || done}
+              className="btn-primary flex w-full items-center justify-center gap-2 rounded-xl bg-ember px-4 py-3 font-medium text-steel hover:bg-[#f5b46a] disabled:opacity-70"
             >
-              {busy === 'email' && <Loader2 size={18} className="animate-spin" />}
-              {t(busy === 'email' ? S.auth.working : isUp ? S.auth.signUpCta : S.auth.signInCta)}
+              {done ? <Check size={18} /> : busy === 'email' && <Loader2 size={18} className="animate-spin" />}
+              {t(done ? UI.auth.welcome : busy === 'email' ? S.auth.working : isUp ? S.auth.signUpCta : S.auth.signInCta)}
             </button>
           </form>
 
@@ -321,15 +377,11 @@ export default function Auth({ mode }: { mode: Mode }) {
               {t(isUp ? S.auth.signInTab : S.auth.signUpTab)}
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Brand column: a C++ editor that writes, compiles and passes on its own */}
       <div className="relative hidden flex-1 items-center overflow-hidden px-10 xl:px-16 lg:flex">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-40 top-1/2 size-[42rem] -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(240,160,75,0.14),transparent)]"
-        />
         <div className="relative mx-auto w-full max-w-2xl">
           <h2 className="text-[2.1rem] font-bold leading-[1.1] xl:text-[2.6rem]">
             <ShinyText variant="chrome" speed={6}>
@@ -337,12 +389,26 @@ export default function Auth({ mode }: { mode: Mode }) {
             </ShinyText>
           </h2>
           <p className="mt-3 max-w-[52ch] text-ash/80">{t(S.auth.pitch)}</p>
+          <ul className="mt-5 hidden space-y-2 [@media(min-height:960px)]:block">
+            {UI.auth.perks.map((p, i) => (
+              <motion.li
+                key={p.en}
+                {...rise(i + 3)}
+                className="flex items-center gap-2.5 text-sm text-ash/85"
+              >
+                <span className="grid size-5 place-items-center rounded-full bg-ember/15 text-ember">
+                  <Check size={12} strokeWidth={3} />
+                </span>
+                {t(p)}
+              </motion.li>
+            ))}
+          </ul>
           <motion.div
             initial={{ opacity: 0, y: 24, rotateX: 8 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             style={{ transformPerspective: 1200 }}
-            className="mt-6"
+            className="float-y mt-6"
           >
             <LiveCode />
           </motion.div>

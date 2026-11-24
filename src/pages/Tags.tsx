@@ -8,6 +8,9 @@ import { TAGS, TAG_GROUPS, type TagGroup } from '@/data/tags/tags';
 import { problemsForTag } from '@/data/problems';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
+import { SpotlightCard } from '@/components/fx/SpotlightCard';
+import { UI } from '@/i18n/uiStrings';
+import { ArrowRight } from 'lucide-react';
 import { JellyRadio } from '@/components/fx/JellyRadio';
 
 export default function Tags() {
@@ -65,30 +68,34 @@ export default function Tags() {
         </label>
       </div>
 
-      <motion.ul layout className="mt-8 grid gap-x-10 border-t border-seam/70 md:grid-cols-2">
+      <motion.ul layout className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence initial={false}>
-          {list.map((tag) => {
+          {list.map((tag, i) => {
             const count = problemsForTag(tag.slug).length;
             return (
               <motion.li
                 key={tag.slug}
                 layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.18 }}
-                className="border-b border-seam/70"
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: Math.min(i, 10) * 0.04 }}
               >
-                <Link to={`/tags/${tag.slug}`} className="group flex gap-4 py-4">
-                  <span className="mt-1.5 h-4 w-0.5 shrink-0 rounded-full bg-seam transition-[background-color,height] duration-200 group-hover:h-6 group-hover:bg-ember" />
-                  <span className="min-w-0">
-                    <span className="flex items-baseline gap-2">
-                      <span className="font-display text-lg font-semibold group-hover:text-ember">{t(tag.name)}</span>
-                      {count > 0 && <span className="text-sm text-slate tabular-nums">{num(count)}</span>}
-                    </span>
-                    <span className="mt-0.5 block text-[0.95rem] text-ash/70">{t(tag.blurb)}</span>
+                <SpotlightCard as={Link} to={`/tags/${tag.slug}`} className="group flex h-full flex-col rounded-2xl p-5">
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="font-display text-lg font-semibold transition-colors group-hover:text-ember">{t(tag.name)}</span>
+                    {count > 0 && (
+                      <span className="shrink-0 rounded-full bg-ember/12 px-2.5 py-0.5 text-xs tabular-nums text-ember">
+                        {num(count)} {t(UI.tags.problems)}
+                      </span>
+                    )}
                   </span>
-                </Link>
+                  <span className="mt-1.5 block text-[0.95rem] text-ash/70">{t(tag.blurb)}</span>
+                  <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm text-slate transition-colors group-hover:text-ember">
+                    {t(UI.tags.open)}
+                    <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
+                  </span>
+                </SpotlightCard>
               </motion.li>
             );
           })}

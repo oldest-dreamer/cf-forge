@@ -23,6 +23,11 @@ import { PROBLEMS } from '@/data/problems';
 import { TAGS, TAG_BY_SLUG } from '@/data/tags/tags';
 import { RatingPill } from '@/components/RatingPill';
 import { Logo } from '@/components/Logo';
+import { Aurora } from '@/components/fx/Aurora';
+import { Reveal } from '@/components/fx/Reveal';
+import { SpotlightCard } from '@/components/fx/SpotlightCard';
+import { UI } from '@/i18n/uiStrings';
+import { ArrowRight, BookOpen, Bot, Code2 } from 'lucide-react';
 import { ElasticLettering } from '@/components/fx/ElasticLettering';
 import { ShinyText } from '@/components/fx/ShinyText';
 import { CodeSlots } from '@/components/fx/CodeSlots';
@@ -80,8 +85,19 @@ export default function Home() {
 
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-12 sm:pt-16 lg:grid-cols-[1.15fr_1fr]">
+      <div className="relative">
+        <Aurora className="h-[44rem] [mask-image:linear-gradient(#000_55%,transparent)]" />
+      <section className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-12 sm:pt-16 lg:grid-cols-[1.15fr_1fr]">
         <div>
+          <motion.span
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-ember/30 bg-ember/10 px-3.5 py-1.5 text-xs text-ember sm:text-sm"
+          >
+            <span className="pulse-dot size-1.5 rounded-full bg-[#3fb950]" />
+            {t(UI.eyebrow)}
+          </motion.span>
           <ElasticLettering
             key={lang}
             text={t(S.home.title)}
@@ -110,13 +126,14 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/tags"
-              className="rounded-xl bg-ember px-5 py-3 font-medium text-steel transition-[transform,background-color] duration-200 hover:bg-[#f5b46a] active:scale-[0.98]"
+              className="btn-primary btn-icon-shift inline-flex items-center gap-2 rounded-xl bg-ember px-5 py-3 font-medium text-steel hover:bg-[#f5b46a]"
             >
               {t(S.home.ctaTags)}
+              <ArrowRight size={17} />
             </Link>
             <Link
               to="/contests"
-              className="rounded-xl border border-seam px-5 py-3 font-medium text-ash transition-colors duration-200 hover:border-slate hover:bg-iron"
+              className="rounded-xl border border-seam px-5 py-3 font-medium text-ash transition-[transform,background-color,border-color] duration-200 hover:border-slate hover:bg-iron active:scale-[0.97]"
             >
               {t(S.home.ctaContests)}
             </Link>
@@ -139,6 +156,7 @@ export default function Home() {
           />
         </div>
       </section>
+      </div>
 
       <section className="mx-auto max-w-6xl px-5">
         <dl className="grid grid-cols-3 gap-4 border-t border-seam/60 pt-6">
@@ -159,14 +177,22 @@ export default function Home() {
       </section>
 
       <section className="border-y border-seam/60 bg-iron/40">
-        <div className="mx-auto grid max-w-6xl gap-px px-5 py-14 md:grid-cols-3 md:gap-10">
+        <div className="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">
           <h2 className="sr-only">{t(S.home.pillarsTitle)}</h2>
-          {S.home.pillars.map((p) => (
-            <Link key={p.to} to={p.to} className="group block py-4">
-              <h3 className="text-xl font-semibold transition-colors group-hover:text-ember">{t(p.title)}</h3>
-              <p className="mt-2 text-ash/75">{t(p.body)}</p>
-            </Link>
-          ))}
+          {S.home.pillars.map((p, i) => {
+            const Icon = [BookOpen, Code2, Bot][i % 3];
+            return (
+              <Reveal key={p.to} index={i}>
+                <SpotlightCard as={Link} to={p.to} className="group block h-full rounded-2xl p-6">
+                  <span className="mb-4 grid size-10 place-items-center rounded-xl bg-ember/12 text-ember transition-transform duration-300 group-hover:scale-110">
+                    <Icon size={20} />
+                  </span>
+                  <h3 className="text-xl font-semibold transition-colors group-hover:text-ember">{t(p.title)}</h3>
+                  <p className="mt-2 text-ash/75">{t(p.body)}</p>
+                </SpotlightCard>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
