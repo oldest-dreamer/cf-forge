@@ -385,6 +385,37 @@ bool any = b.any(), none = b.none();`,
 
   // ── Algorithms ───────────────────────────────────────
   {
+    id: 'binary-search',
+    group: 'algorithms',
+    title: 'Binary search on the answer',
+    lesson: 'stl-algorithms',
+    summary: {
+      en: 'When "is x big enough?" flips from false to true exactly once, find the first true in O(log range) checks.',
+      bn: '"x কি যথেষ্ট বড়?" প্রশ্নের উত্তর ঠিক একবার false থেকে true হলে, O(log পরিসর) পরীক্ষায় প্রথম true খুঁজে পাওয়া যায়।',
+    },
+    cost: 'O(log range) checks',
+    code: raw`// smallest x in [lo, hi] with ok(x) true; ok must be false...false true...true
+long long lo = 0, hi = 2000000000LL;
+while (lo < hi) {
+    long long mid = lo + (hi - lo) / 2;
+    if (ok(mid)) hi = mid;      // mid works: answer is mid or smaller
+    else lo = mid + 1;          // mid fails: answer is larger
+}
+// lo is the answer
+// on a sorted vector: lower_bound(v.begin(), v.end(), x) - v.begin()`,
+    explain: [
+      {
+        en: 'You do not need a sorted array. You need a yes/no question about a number whose answer changes only once as the number grows, for example "can all tasks finish within T minutes?". Write that check as ok(x), then search for the boundary. For the largest x that works, flip the rule: if ok(mid) then lo = mid, and use mid = lo + (hi - lo + 1) / 2.',
+        bn: 'সাজানো অ্যারে লাগে না। দরকার একটি সংখ্যা নিয়ে হ্যাঁ/না প্রশ্ন, যার উত্তর সংখ্যা বাড়লে মাত্র একবার বদলায়, যেমন "সব কাজ কি T মিনিটে শেষ হয়?"। সেই পরীক্ষাকে ok(x) লিখুন, তারপর সীমানা খুঁজুন। সবচেয়ে বড় কার্যকর x চাইলে নিয়ম উল্টান: ok(mid) হলে lo = mid, আর mid = lo + (hi - lo + 1) / 2 নিন।',
+      },
+    ],
+    pitfalls: [
+      { en: 'Infinite loop: with lo = mid you must round mid up, or the range never shrinks.', bn: 'অনন্ত লুপ: lo = mid দিলে mid উপরের দিকে গোল করতে হবে, নইলে পরিসর ছোট হয় না।' },
+      { en: '(lo + hi) / 2 can overflow int. Use lo + (hi - lo) / 2.', bn: '(lo + hi) / 2 int ওভারফ্লো করতে পারে। lo + (hi - lo) / 2 ব্যবহার করুন।' },
+      { en: 'ok(x) that is not monotonic makes the search return nonsense.', bn: 'ok(x) একমুখী না হলে সার্চ অর্থহীন উত্তর দেয়।' },
+    ],
+  },
+  {
     id: 'iota-fill',
     group: 'algorithms',
     title: 'iota',

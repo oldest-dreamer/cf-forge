@@ -444,7 +444,7 @@ long long sumAll(const vector<int> &v) {      // const & : no copy, cannot modif
 }
 
 void doubleAll(vector<int> &v) {              // & : modifies the real vector
-    for (int &x : v) x *= 2;                  // &x so we change the elements themselves
+    for (int &x : v) x *= 2;                  // &x edits the elements
 }
 
 int main() {
