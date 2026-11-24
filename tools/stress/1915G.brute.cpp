@@ -1,0 +1,4 @@
+#include <bits/stdc++.h>
+using namespace std;
+// Bellman-Ford over (city, slowness in hand) without any greedy switching rule: you may also keep a slower bike.
+int main() { int t; cin >> t; while (t--) { int n, m; cin >> n >> m; vector<array<long long,3>> e(m); for (auto& [a, b, w] : e) cin >> a >> b >> w; vector<int> s(n + 1); for (int i = 1; i <= n; i++) cin >> s[i]; const long long INF = LLONG_MAX / 4; vector<vector<long long>> d(n + 1, vector<long long>(7, INF)); d[1][s[1]] = 0; bool ch = true; while (ch) { ch = false; for (int v = 1; v <= n; v++) for (int k = 1; k <= 6; k++) if (d[v][k] < INF && d[v][s[v]] > d[v][k]) { d[v][s[v]] = d[v][k]; ch = true; } for (auto [a, b, w] : e) for (int x = 0; x < 2; x++, swap(a, b)) for (int k = 1; k <= 6; k++) if (d[a][k] < INF && d[a][k] + w * k < d[b][k]) { d[b][k] = d[a][k] + w * k; ch = true; } } cout << *min_element(d[n].begin(), d[n].end()) << "\n"; } }

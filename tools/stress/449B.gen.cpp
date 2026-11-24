@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 6 + 2, k = r() % 6 + 1; std::vector<std::array<int,3>> e; for (int i = 2; i <= n; i++) e.push_back({int(r() % (i - 1) + 1), i, int(r() % 6 + 1)}); int extra = r() % 4; while (extra--) { int a = r() % n + 1, b = r() % n + 1; if (a != b) e.push_back({a, b, int(r() % 6 + 1)}); } printf("%d %d %d\n", n, (int)e.size(), k); for (auto [a, b, w] : e) printf("%d %d %d\n", a, b, w); for (int i = 0; i < k; i++) printf("%d %d\n", int(r() % (n - 1) + 2), int(r() % 8 + 1)); }

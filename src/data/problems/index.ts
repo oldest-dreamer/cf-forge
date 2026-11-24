@@ -35,6 +35,8 @@ import { p1537D, p1451D, p1194D, p1695B, p1404B, p451A, p1972B, p1990A, p493D } 
 import { p197A, p1527A, p1559A, p1395C, p1516B, p1554B, p1847B, p1979B, p276D, p1325D } from './wave11b.ts';
 import { p1609D, p1213G, p1559D1, p25D, p1253D, p1131F } from './wave12a.ts';
 import { p1594D, p1534C, p1209D, p1278D, p2020D } from './wave12b.ts';
+import { p449B, p545E, p1076D, p1307D, p1320B, p1611E1, p1365D } from './wave13a.ts';
+import { p1433G, p1473E, p1486E, p1915G, p1196F, p295B } from './wave13b.ts';
 import { p112A, p281A, p59A, p520A, p41A, p734A, p131A, p96A, p339A, p469A, p546A, p122A, p69A } from './wave1b.ts';
 
 /** The CF Forge problem pool. New waves are appended here. */
@@ -80,6 +82,9 @@ export const PROBLEMS: ProblemEntry[] = [
   // wave 12 (DSU)
   p1609D, p1213G, p1559D1, p25D, p1253D, p1131F,
   p1594D, p1534C, p1209D, p1278D, p2020D,
+  // wave 13 (shortest paths)
+  p449B, p545E, p1076D, p1307D, p1320B, p1611E1, p1365D,
+  p1433G, p1473E, p1486E, p1915G, p1196F, p295B,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(

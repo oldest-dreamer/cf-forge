@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 7 + 2; std::set<std::pair<int,int>> s; std::vector<std::array<int,3>> e; int m = r() % 10 + 1; for (int i = 0; i < 100 && (int)e.size() < m; i++) { int a = r() % n + 1, b = r() % n + 1; if (a == b || s.count({std::min(a, b), std::max(a, b)})) continue; s.insert({std::min(a, b), std::max(a, b)}); e.push_back({a, b, int(r() % 50 + 1)}); } printf("%d %d\n", n, (int)e.size()); for (auto [a, b, w] : e) printf("%d %d %d\n", a, b, w); }
