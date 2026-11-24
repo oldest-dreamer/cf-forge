@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]), ans(v[3]); int t; in >> t; while (t--) { long long A, B; in >> A >> B; string w, wa; out >> w; ans >> wa; if (wa == "YES") { long long q; ans >> q >> q >> q; } if (w != wa) return 1; if (w == "NO") continue; long long x, y, z; if (!(out >> x >> y >> z)) return 1; if (x <= 0 || y <= 0 || z <= 0 || x == y || y == z || x == z || x + y != z) return 1; int good = 0, near = 0; for (long long q : {x, y, z}) { if (q % (A * B) == 0) good++; else if (q % A == 0) near++; } if (good != 1 || near != 2) return 1; } return 0; }

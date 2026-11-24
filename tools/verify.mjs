@@ -67,8 +67,8 @@ for (const p of PROBLEMS) {
   const cases = [...p.samples.map((x) => ({ input: x.input, output: x.output })), ...p.tests];
   const slow = new Set(p.solutions.filter((s) => !s.accepted).map((s) => s.id));
   for (const [id, bin] of Object.entries(bins)) {
-    // Too-slow reference solutions are only run on the samples (and on small stress inputs).
-    for (const c of slow.has(id) ? cases.slice(0, p.samples.length) : cases) {
+    // Too-slow reference solutions are only checked on small stress inputs.
+    for (const c of slow.has(id) ? [] : cases) {
       checks++;
       const got = run(bin, c.input + '\n');
       if (slow.has(id) && !got.trim()) continue; // a slow reference may skip inputs too big for it

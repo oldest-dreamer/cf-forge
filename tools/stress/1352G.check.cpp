@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]), ans(v[3]); int t; in >> t; while (t--) { int n; in >> n; long long first, fa; out >> first; ans >> fa; bool possible = fa != -1; if (possible) for (int i = 1; i < n; i++) { long long q; ans >> q; } if (!possible) { if (first != -1) return 1; continue; } if (first == -1) return 1; vector<long long> p = {first}; for (int i = 1; i < n; i++) { long long q; if (!(out >> q)) return 1; p.push_back(q); } vector<long long> s = p; sort(s.begin(), s.end()); for (int i = 0; i < n; i++) if (s[i] != i + 1) return 1; for (int i = 1; i < n; i++) { long long d = llabs(p[i] - p[i - 1]); if (d < 2 || d > 4) return 1; } } return 0; }
