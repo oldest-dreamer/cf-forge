@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 8 + 1, k = r() % (n + 1); std::vector<int> a(n); long long S = 0; long long f[8] = {1, 1, 2, 6, 24, 120, 720, 5040}; for (auto& x : a) { x = r() % 6 + 1; int ch = r() % 3; if (ch == 1) S += x; if (ch == 2) S += f[x]; } if (S == 0) S = 1; printf("%d %d %lld\n", n, k, S); for (int x : a) printf("%d ", x); puts(""); }

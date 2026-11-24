@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int m = r() % 6 + 2, n = r() % 7 + 1; std::vector<std::vector<int>> sw(m); for (int d = 1; d <= n; d++) { int a = r() % m, b = r() % m; while (b == a) b = r() % m; sw[a].push_back(d); sw[b].push_back(d); } printf("%d %d\n", n, m); for (int d = 0; d < n; d++) printf("%d ", int(r() % 2)); puts(""); for (auto& s : sw) { printf("%d", (int)s.size()); for (int x : s) printf(" %d", x); puts(""); } }

@@ -1,0 +1,3 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(int c, char** v) { ifstream in(v[1]), out(v[2]), ans(v[3]); int n, m; in >> n >> m; vector<int> a(m), b(m); for (int i = 0; i < m; i++) { in >> a[i] >> b[i]; if (a[i] > b[i]) swap(a[i], b[i]); } string A, O; ans >> A; if (!(out >> O)) return 1; if (A == "Impossible") return O == "Impossible" ? 0 : 1; if ((int)O.size() != m) return 1; for (char ch : O) if (ch != 'i' && ch != 'o') return 1; for (int i = 0; i < m; i++) for (int j = i + 1; j < m; j++) { if (O[i] != O[j]) continue; set<int> p = {a[i], b[i], a[j], b[j]}; if (p.size() < 4) continue; bool x = a[i] < a[j] && a[j] < b[i], y = a[i] < b[j] && b[j] < b[i]; if (x != y) return 1; } return 0; }
