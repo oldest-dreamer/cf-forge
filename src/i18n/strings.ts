@@ -189,6 +189,8 @@ export const S = {
     toolkit: { en: 'C++ toolkit used here', bn: 'এখানে ব্যবহৃত C++ টুলকিট' },
     howItWorks: { en: 'How it works', bn: 'কীভাবে কাজ করে' },
     related: { en: 'Try next', bn: 'এরপর চেষ্টা করুন' },
+    back: { en: 'Back', bn: 'পেছনে' },
+    allProblems: { en: 'All problems', bn: 'সব প্রবলেম' },
     notFound: { en: 'That problem is not in CF Forge yet.', bn: 'এই প্রবলেমটি এখনও CF Forge-এ নেই।' },
   },
 

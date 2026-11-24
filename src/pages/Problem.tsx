@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Reveal } from '@/components/fx/Reveal';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { CheckCircle2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ExternalLink } from 'lucide-react';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
 import { PROBLEM_BY_ID } from '@/data/problems';
@@ -150,6 +150,34 @@ function Solutions({ p }: { p: ProblemEntry }) {
   );
 }
 
+/** Back to wherever the reader came from (a tag page, the list); falls back to the first tag or the list. */
+function BackBar({ p }: { p: ProblemEntry }) {
+  const { t } = useI18n();
+  const nav = useNavigate();
+  const loc = useLocation();
+  const cameFromSite = loc.key !== 'default';
+  const firstTag = p.tags[0];
+  const btn = 'inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-slate ring-1 ring-seam transition-[color,box-shadow,transform] hover:text-ash hover:ring-slate active:scale-[0.97]';
+  return (
+    <nav className="flex flex-wrap items-center gap-2 pt-6" aria-label={t(S.problem.back)}>
+      {cameFromSite ? (
+        <button type="button" onClick={() => nav(-1)} className={btn}>
+          <ArrowLeft size={15} /> {t(S.problem.back)}
+        </button>
+      ) : (
+        <Link to="/problems" className={btn}>
+          <ArrowLeft size={15} /> {t(S.problem.allProblems)}
+        </Link>
+      )}
+      {firstTag && TAG_BY_SLUG[firstTag] && (
+        <Link to={`/tags/${firstTag}`} className={btn}>
+          <ArrowLeft size={15} /> {t(TAG_BY_SLUG[firstTag].name)}
+        </Link>
+      )}
+    </nav>
+  );
+}
+
 export default function Problem() {
   const { id = '' } = useParams();
   const { t, num } = useI18n();
@@ -167,6 +195,7 @@ export default function Problem() {
 
   return (
     <div className="mx-auto max-w-6xl px-5">
+      <BackBar p={p} />
       <div className="grid gap-12 lg:grid-cols-[1fr_14rem]">
         <article className="min-w-0 space-y-12 pb-8">
           {/* 1. Overview */}
