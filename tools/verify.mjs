@@ -130,14 +130,15 @@ for (const p of PROBLEMS) {
       const lines = sm.transcript.split('\n');
       let ended = false;
       let expectReply = null;
-      if (judge.first && lines[0] !== '< ' + judge.first.split('\n')[0]) {
+      const firstLines = judge.first ? judge.first.split('\n') : [];
+      if (firstLines.some((fl, i) => lines[i] !== '< ' + fl)) {
         // the first message from the judge is shown first only when it has one
         fail(`sample transcript should start with the judge's "${judge.first}"`);
       }
-      for (const ln of lines) {
+      for (const [li, ln] of lines.entries()) {
         const body = ln.slice(2);
         if (ln.startsWith('< ')) {
-          if (judge.first && ln === lines[0] && body === judge.first.split('\n')[0]) continue;
+          if (li < firstLines.length) continue;
           if (expectReply === null || expectReply !== body) fail(`sample transcript: judge would not say "${body}" here (it says ${JSON.stringify(expectReply)})`);
           expectReply = null;
         } else if (ln.startsWith('> ')) {
