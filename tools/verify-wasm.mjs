@@ -7,7 +7,7 @@
  * Usage: node --experimental-strip-types tools/verify-wasm.mjs [ID...]
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -48,6 +48,26 @@ for (const p of PROBLEMS) {
     // Ordinary problems: compile every accepted solution in the browser toolchain and run samples + tests.
     if (!only.length) continue;
     console.log(`${p.id} ${p.name}`);
+    // Problems that accept several answers ship a native checker: run it instead of comparing text.
+    const checkFile = join(root, 'tools/stress', `${p.id}.check.cpp`);
+    let checkBin = null;
+    if (existsSync(checkFile)) {
+      checkBin = `/tmp/cf-forge-wasm-check-${p.id}`;
+      execFileSync('g++', ['-std=gnu++20', '-O2', '-o', checkBin, checkFile]);
+    }
+    const checkWith = (input, got, want) => {
+      const d = `/tmp/cf-forge-wasm-io-${process.pid}`;
+      mkdirSync(d, { recursive: true });
+      writeFileSync(join(d, 'in.txt'), input);
+      writeFileSync(join(d, 'out.txt'), got);
+      writeFileSync(join(d, 'ans.txt'), want);
+      try {
+        execFileSync(checkBin, [join(d, 'in.txt'), join(d, 'out.txt'), join(d, 'ans.txt')], { stdio: 'pipe' });
+        return true;
+      } catch {
+        return false;
+      }
+    };
     const sameTokens = (a, b) => {
       const x = a.trim().split(/\s+/), y = b.trim().split(/\s+/);
       if (x.length !== y.length) return false;
@@ -66,7 +86,7 @@ for (const p of PROBLEMS) {
         runs++;
         const r = await runModule(mod, c.input + '\n', false);
         const got = r.status === 'ok' ? r.stdout : 'RUNTIME ' + r.status + ' ' + (r.error ?? '');
-        if (!sameTokens(got, c.output)) {
+        if (checkBin ? !checkWith(c.input + '\n', got, c.output) : !sameTokens(got, c.output)) {
           bad++;
           console.log(`  ✗ ${s.id} on ${JSON.stringify(c.input).slice(0, 40)}: got ${got.trim().slice(0, 40)} expected ${c.output.slice(0, 40)}`);
         }

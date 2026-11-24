@@ -14,7 +14,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const tmp = '/tmp/cf-forge-verify';
+const tmp = `/tmp/cf-forge-verify-${process.pid}`; // one directory per run, so several verifiers can run side by side
 mkdirSync(tmp, { recursive: true });
 const [roundsArg, ...only] = process.argv.slice(2);
 const ROUNDS = Number(roundsArg) || 300;

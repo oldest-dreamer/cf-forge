@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int L = r() % 4 + 1, n = r() % 5 + 1, m = r() % 7; std::string kind; for (int i = 0; i < L; i++) kind += r() % 2 ? 'V' : 'C'; printf("%s\n%d %d\n", kind.c_str(), n, m); while (m--) printf("%d %c %d %c\n", int(r() % n + 1), r() % 2 ? 'V' : 'C', int(r() % n + 1), r() % 2 ? 'V' : 'C'); std::string s; for (int i = 0; i < n; i++) s += char('a' + r() % L); puts(s.c_str()); }
