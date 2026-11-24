@@ -31,6 +31,8 @@ import { p1335B, p1463B, p1220C, p1104B, p1396B, p1365A } from './wave9b.ts';
 import { p1092F, p1187E, p1324F, p1528A, p1676G, p1153D, p1406C, p1176E } from './wave10a.ts';
 import { p1354B, p1680C, p1203D2, p1632B, p1474A, p1515A, p1263D } from './wave10b.ts';
 import { p380C, p339D, p1234D, p1690G, p1294D, p1703F } from './wave10c.ts';
+import { p1537D, p1451D, p1194D, p1695B, p1404B, p451A, p1972B, p1990A, p493D } from './wave11a.ts';
+import { p197A, p1527A, p1559A, p1395C, p1516B, p1554B, p1847B, p1979B, p276D, p1325D } from './wave11b.ts';
 import { p112A, p281A, p59A, p520A, p41A, p734A, p131A, p96A, p339A, p469A, p546A, p122A, p69A } from './wave1b.ts';
 
 /** The CF Forge problem pool. New waves are appended here. */
@@ -70,6 +72,9 @@ export const PROBLEMS: ProblemEntry[] = [
   p1092F, p1187E, p1324F, p1528A, p1676G, p1153D, p1406C, p1176E,
   p1354B, p1680C, p1203D2, p1632B, p1474A, p1515A, p1263D,
   p380C, p339D, p1234D, p1690G, p1294D, p1703F,
+  // wave 11 (games, bitmasks)
+  p1537D, p1451D, p1194D, p1695B, p1404B, p451A, p1972B, p1990A, p493D,
+  p197A, p1527A, p1559A, p1395C, p1516B, p1554B, p1847B, p1979B, p276D, p1325D,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(
