@@ -62,6 +62,7 @@ import { p321E, p868F, p833B, p1527E } from './wave17h.ts';
 import { p715C, p1100F, p848C } from './wave17i.ts';
 import { p150E, p438E } from './wave17j.ts';
 import { p679A, p727C, p1167B, p1486C1, p1486C2 } from './wave21a.ts';
+import { p1407C, p1797C, p1698D, p1697D, p1556D } from './wave21b.ts';
 import { p112A, p281A, p59A, p520A, p41A, p734A, p131A, p96A, p339A, p469A, p546A, p122A, p69A } from './wave1b.ts';
 
 /** The CF Forge problem pool. New waves are appended here. */
@@ -138,6 +139,7 @@ export const PROBLEMS: ProblemEntry[] = [
   p150E, p438E,
   // wave 21 (interactive)
   p679A, p727C, p1167B, p1486C1, p1486C2,
+  p1407C, p1797C, p1698D, p1697D, p1556D,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(

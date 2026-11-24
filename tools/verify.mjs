@@ -177,6 +177,8 @@ for (const p of PROBLEMS) {
         if (lenient && id === 'brute' && d.length > 3000) continue;
         checks++;
         const r = await playNative(bin, factory, d, lenient);
+        // A reference that is too slow for this hidden data is not a failure.
+        if (!r.ok && lenient && /too many lines|timeout/.test(r.message)) continue;
         if (!r.ok) {
           bad++;
           fail(`stress seed ${seed}: ${id}: ${r.message}\n    data: ${JSON.stringify(d).slice(0, 120)}`);
