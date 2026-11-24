@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int n = r() % 28 + 3; double R = 1 + r() % 40, ang = (r() % 1000) / 1000.0 * 2 * M_PI, cx = int(r() % 100) - 50, cy = int(r() % 100) - 50; std::vector<int> idx(n); std::iota(idx.begin(), idx.end(), 0); std::shuffle(idx.begin(), idx.end(), r); for (int i = 0; i < 3; i++) { double a = ang + 2 * M_PI * idx[i] / n; printf("%.6f %.6f\n", cx + R * cos(a), cy + R * sin(a)); } }

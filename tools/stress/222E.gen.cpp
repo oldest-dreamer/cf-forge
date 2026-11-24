@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main(int c, char** v) { std::mt19937 r(atoi(v[1])); int m = r() % 6 + 1; long long n = r() % 200 + 1; std::set<std::string> s; int k = r() % (m * m + 1); std::string L = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; while ((int)s.size() < k) s.insert(std::string(1, L[r() % m]) + L[r() % m]); printf("%lld %d %d\n", n, m, k); for (auto& x : s) puts(x.c_str()); }
