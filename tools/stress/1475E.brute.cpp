@@ -1,0 +1,2 @@
+#include <bits/stdc++.h>
+int main() { int t; std::cin >> t; while (t--) { int n, k; std::cin >> n >> k; std::vector<int> a(n); for (auto& x : a) std::cin >> x; int best = -1; long long ways = 0; for (int mask = 0; mask < 1 << n; mask++) { if (__builtin_popcount(mask) != k) continue; int s = 0; for (int i = 0; i < n; i++) if (mask >> i & 1) s += a[i]; if (s > best) best = s, ways = 1; else if (s == best) ways++; } std::cout << ways % 1000000007 << "\n"; } }

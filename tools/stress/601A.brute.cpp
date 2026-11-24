@@ -1,0 +1,4 @@
+#include <bits/stdc++.h>
+using namespace std;
+// Joint BFS over (train town, bus town); they may not meet anywhere except n.
+int main() { int n, m; cin >> n >> m; vector<vector<bool>> rail(n + 1, vector<bool>(n + 1)); for (int i = 0; i < m; i++) { int a, b; cin >> a >> b; rail[a][b] = rail[b][a] = true; } vector<vector<int>> d(n + 1, vector<int>(n + 1, -1)); queue<pair<int,int>> q; d[1][1] = 0; q.push({1, 1}); while (!q.empty()) { auto [a, b] = q.front(); q.pop(); vector<int> na, nb; if (a == n) na = {n}; else for (int u = 1; u <= n; u++) if (u != a && rail[a][u]) na.push_back(u); if (b == n) nb = {n}; else for (int u = 1; u <= n; u++) if (u != b && !rail[b][u]) nb.push_back(u); for (int x : na) for (int y : nb) { if (x == y && x != n) continue; if (d[x][y] == -1) { d[x][y] = d[a][b] + 1; q.push({x, y}); } } } cout << d[n][n] << "\n"; }

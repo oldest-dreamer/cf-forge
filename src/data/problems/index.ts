@@ -26,6 +26,8 @@ import { p1703A, p1619A, p1660C, p1676C, p1324B, p1551B1 } from './wave7a.ts';
 import { p1370A, p1325A, p1360D, p1617B, p1514A, p762A, p1521A, p1352A, p1352B, p1352G } from './wave7b.ts';
 import { p1492C, p1873D, p6C, p1676F, p1336A, p161D, p1143C, p1905B, p1830A, p1702E } from './wave8a.ts';
 import { p1899A, p1472D, p1382B, p1527B1, p1370C, p276B, p1858A } from './wave8b.ts';
+import { p550B, p579A, p1420B, p1615B, p131C, p1475E, p9A, p601A, p1063B, p1490D } from './wave9a.ts';
+import { p1335B, p1463B, p1220C, p1104B, p1396B, p1365A } from './wave9b.ts';
 import { p112A, p281A, p59A, p520A, p41A, p734A, p131A, p96A, p339A, p469A, p546A, p122A, p69A } from './wave1b.ts';
 
 /** The CF Forge problem pool. New waves are appended here. */
@@ -58,6 +60,9 @@ export const PROBLEMS: ProblemEntry[] = [
   // wave 8 (two pointers, trees, DSU)
   p1492C, p1873D, p6C, p1676F, p1336A, p161D, p1143C, p1905B, p1830A, p1702E,
   p1899A, p1472D, p1382B, p1527B1, p1370C, p276B, p1858A,
+  // wave 9 (bitmasks, combinatorics, shortest paths, constructive, games)
+  p550B, p579A, p1420B, p1615B, p131C, p1475E, p9A, p601A, p1063B, p1490D,
+  p1335B, p1463B, p1220C, p1104B, p1396B, p1365A,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(
