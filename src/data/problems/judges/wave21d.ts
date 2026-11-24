@@ -185,3 +185,75 @@ export const j1762D: JudgeFactory = (data, o) => {
     end: () => ({ ok: false, message: 'the program ended without an answer' }),
   };
 };
+
+// 1174F Ehab and the Big Finale: a tree rooted at 1 hides a vertex x. "d u" -> dist(u, x); "s u" -> the next vertex on the
+// path from u to x (only when u is a proper ancestor of x); at most 36 queries; "! x".
+export const j1174F: JudgeFactory = (data, o) => {
+  const [n, ...rest] = nums(data);
+  const adj: number[][] = Array.from({ length: n + 1 }, () => []);
+  for (let i = 0; i < n - 1; i++) {
+    adj[rest[2 * i]].push(rest[2 * i + 1]);
+    adj[rest[2 * i + 1]].push(rest[2 * i]);
+  }
+  const x = rest[2 * (n - 1)];
+  const par = new Array(n + 1).fill(0);
+  const dep = new Array(n + 1).fill(-1);
+  dep[1] = 0;
+  const queue = [1];
+  for (let h = 0; h < queue.length; h++) for (const w of adj[queue[h]]) if (dep[w] < 0) { dep[w] = dep[queue[h]] + 1; par[w] = queue[h]; queue.push(w); }
+  const nextOnPath = new Map<number, number>();
+  for (let c = x; c !== 1; c = par[c]) nextOnPath.set(par[c], c);
+  // distances from x
+  const dx = new Array(n + 1).fill(-1);
+  dx[x] = 0;
+  const q2 = [x];
+  for (let h = 0; h < q2.length; h++) for (const w of adj[q2[h]]) if (dx[w] < 0) { dx[w] = dx[q2[h]] + 1; q2.push(w); }
+  const max = budget(36, o.lenient);
+  let q = 0;
+  return {
+    first: `${n}\n${Array.from({ length: n - 1 }, (_, i) => `${rest[2 * i]} ${rest[2 * i + 1]}`).join('\n')}`.trimEnd(),
+    onLine(line) {
+      const t = line.trim();
+      const m = /^([ds!])\s+(\d+)$/.exec(t);
+      if (!m) return reject(bad(line));
+      const u = Number(m[2]);
+      if (u < 1 || u > n) return reject(bad(line));
+      if (m[1] === '!') return u === x ? accept(`found the hidden vertex with ${q} queries`) : reject(`the hidden vertex is not ${u}`);
+      if (++q > max) return reject('more than 36 queries');
+      if (m[1] === 'd') return reply(String(dx[u]));
+      const nx = nextOnPath.get(u);
+      return nx === undefined ? reject(`"s ${u}" is only allowed on a proper ancestor of the hidden vertex`) : reply(String(nx));
+    },
+    end: () => ({ ok: false, message: 'the program ended without printing the vertex' }),
+  };
+};
+
+// 713B Searching Rectangles: two disjoint rectangles in an n x n grid. "? x1 y1 x2 y2" -> how many of them lie fully
+// inside that rectangle; at most 200 queries; "! " and both rectangles (8 numbers, either order).
+export const j713B: JudgeFactory = (data, o) => {
+  const [n, ...r] = nums(data);
+  const A = r.slice(0, 4);
+  const B = r.slice(4, 8);
+  const inside = (q: number[], a: number[]) => q[0] <= a[0] && q[1] <= a[1] && a[2] <= q[2] && a[3] <= q[3];
+  const same = (a: number[], b: number[]) => a.every((v, i) => v === b[i]);
+  const max = budget(200, o.lenient);
+  let q = 0;
+  return {
+    first: String(n),
+    onLine(line) {
+      const t = line.trim();
+      const v = intsOf(t.slice(1));
+      if (t.startsWith('!')) {
+        if (!v || v.length !== 8) return reject(bad(line));
+        const a = v.slice(0, 4);
+        const b = v.slice(4, 8);
+        return (same(a, A) && same(b, B)) || (same(a, B) && same(b, A)) ? accept(`found both rectangles with ${q} queries`) : reject('those are not the two rectangles');
+      }
+      if (!t.startsWith('?') || !v || v.length !== 4) return reject(bad(line));
+      if (v[0] < 1 || v[1] < 1 || v[2] > n || v[3] > n || v[0] > v[2] || v[1] > v[3]) return reject(bad(line));
+      if (++q > max) return reject('more than 200 queries');
+      return reply(String((inside(v, A) ? 1 : 0) + (inside(v, B) ? 1 : 0)));
+    },
+    end: () => ({ ok: false, message: 'the program ended without printing the rectangles' }),
+  };
+};
