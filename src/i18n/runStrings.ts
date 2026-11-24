@@ -34,6 +34,15 @@ export const RUN = {
     bn: 'আপনার ব্রাউজারে চলে। সময় আনুমানিক; আসল সীমা কোডফোর্সেস যাচাই করে।',
   },
   edited: { en: 'Edited', bn: 'এডিট করা' },
+  judgeData: { en: "Judge's hidden data", bn: 'জাজের লুকানো ডেটা' },
+  conversation: { en: 'Conversation', bn: 'কথোপকথন' },
+  youPrint: { en: 'your program prints', bn: 'আপনার প্রোগ্রাম প্রিন্ট করে' },
+  judgeReplies: { en: 'the judge answers', bn: 'জাজ উত্তর দেয়' },
+  judgeSays: { en: 'Judge', bn: 'জাজ' },
+  interactiveNote: {
+    en: 'Interactive problem: your program talks to a judge written in our code. Each test hides a secret (shown below the run); flush after every query. The program is replayed once per query, so keep it deterministic (no clock-based random seeds).',
+    bn: 'ইন্টারঅ্যাকটিভ সমস্যা: আপনার প্রোগ্রাম আমাদের লেখা একটি জাজের সাথে কথা বলে। প্রতিটি টেস্টে একটি গোপন মান থাকে (রান করার পর দেখা যায়); প্রতিটি কোয়েরির পর flush করুন। প্রতিটি কোয়েরির জন্য প্রোগ্রামটি আবার চালানো হয়, তাই এটিকে নির্ধারিত রাখুন (ঘড়ি-ভিত্তিক র‍্যান্ডম সিড নয়)।',
+  },
 
   playground: {
     nav: { en: 'Code runner', bn: 'কোড রানার' },

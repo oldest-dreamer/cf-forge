@@ -1,9 +1,16 @@
 import { useCallback, useRef, useState } from 'react';
+import type { JudgeFactory } from '@/data/problems/judges/types';
 import { compile, isCompilerReady, run, sameOutput, type RunResult } from './index';
+import { runInteractive, type Turn } from './interactive';
 
 export type Phase = 'idle' | 'downloading' | 'compiling' | 'running' | 'done';
 
-export type TestOutcome = RunResult & { verdict: 'passed' | 'wrong' | 'tle' | 'rte' | 'ole' | 'ran' };
+export type TestOutcome = RunResult & {
+  verdict: 'passed' | 'wrong' | 'tle' | 'rte' | 'ole' | 'ran';
+  /** Interactive runs: the conversation and the judge's verdict message. */
+  transcript?: Turn[];
+  message?: string;
+};
 
 export function verdictOf(r: RunResult, expected?: string): TestOutcome['verdict'] {
   if (r.status === 'time_limit') return 'tle';
@@ -22,7 +29,7 @@ export function useCompiler() {
   const [current, setCurrent] = useState(-1);
   const busy = useRef(false);
 
-  const runAll = useCallback(async (code: string, cases: { input: string; output?: string }[], timeLimitMs: number) => {
+  const runAll = useCallback(async (code: string, cases: { input: string; output?: string }[], timeLimitMs: number, judge?: JudgeFactory) => {
     if (busy.current) return;
     busy.current = true;
     setCompileError(null);
@@ -46,8 +53,25 @@ export function useCompiler() {
     setPhase('running');
     for (let i = 0; i < cases.length; i++) {
       setCurrent(i);
-      const r = await run(c.module, cases[i].input.endsWith('\n') ? cases[i].input : cases[i].input + '\n', timeLimitMs);
-      const outcome: TestOutcome = { ...r, verdict: verdictOf(r, cases[i].output) };
+      let outcome: TestOutcome;
+      if (judge) {
+        // Interactive: the test's input is the judge's hidden data.
+        const o = await runInteractive(c.module, judge(cases[i].input, {}), timeLimitMs);
+        outcome = {
+          status: o.verdict === 'tle' ? 'time_limit' : o.verdict === 'rte' ? 'runtime_error' : o.verdict === 'ole' ? 'output_limit' : 'ok',
+          stdout: o.transcript.map((x) => (x.dir === 'out' ? '> ' : '< ') + x.text).join('\n'),
+          stderr: o.stderr,
+          exitCode: o.exitCode,
+          ms: o.ms,
+          error: o.error,
+          verdict: o.verdict,
+          transcript: o.transcript,
+          message: o.message,
+        };
+      } else {
+        const r = await run(c.module, cases[i].input.endsWith('\n') ? cases[i].input : cases[i].input + '\n', timeLimitMs);
+        outcome = { ...r, verdict: verdictOf(r, cases[i].output) };
+      }
       setResults((old) => {
         const next = old.slice();
         next[i] = outcome;

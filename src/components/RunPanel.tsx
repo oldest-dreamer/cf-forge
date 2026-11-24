@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { CheckCircle2, ChevronDown, Clock3, Loader2, Pencil, Play, RotateCcw, TerminalSquare, XCircle, AlertTriangle } from 'lucide-react';
 import { useCompiler, type Phase, type TestOutcome } from '@/compiler/useCompiler';
 import type { TestCase } from '@/data/problems/types';
+import type { JudgeFactory } from '@/data/problems/judges/types';
 import { useI18n } from '@/i18n/I18nProvider';
 import { RUN } from '@/i18n/runStrings';
 import type { L } from '@/i18n/types';
@@ -65,6 +66,27 @@ function Io({ label, text, tone }: { label: string; text: string; tone?: 'bad' }
   );
 }
 
+function Talk({ turns, message, ok }: { turns: NonNullable<TestOutcome['transcript']>; message?: string; ok: boolean }) {
+  const { t } = useI18n();
+  return (
+    <div className="min-w-0 flex-1">
+      <p className="mb-1 text-xs text-slate">
+        {t(RUN.conversation)} <span className="text-slate/70">({t(RUN.youPrint)} → · ← {t(RUN.judgeReplies)})</span>
+      </p>
+      <pre className={cn('max-h-64 overflow-auto rounded-lg border bg-[#141c28] px-3 py-2 font-mono text-[0.82rem] leading-relaxed', ok ? 'border-seam' : 'border-[#ff7b72]/40')}>
+        {turns.length === 0 && ' '}
+        {turns.map((x, i) => (
+          <span key={i} className={cn('block', x.dir === 'out' ? 'text-ash' : 'text-ember')}>
+            {x.dir === 'out' ? '→ ' : '← '}
+            {x.text}
+          </span>
+        ))}
+        {message && <span className={cn('mt-1 block border-t border-seam/60 pt-1', ok ? 'text-[#56d364]' : 'text-[#ffb4ab]')}>{t(RUN.judgeSays)}: {message}</span>}
+      </pre>
+    </div>
+  );
+}
+
 export function ResultRow({ i, tc, r, running }: { i: number; tc: { input: string; output?: string }; r: TestOutcome | null; running: boolean }) {
   const { t, num } = useI18n();
   const [open, setOpen] = useState(false);
@@ -102,9 +124,18 @@ export function ResultRow({ i, tc, r, running }: { i: number; tc: { input: strin
         {show && r && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <div className="flex flex-col gap-3 pb-4 sm:flex-row">
-              <Io label={t(RUN.input)} text={tc.input} />
-              {tc.output !== undefined && <Io label={t(RUN.expected)} text={tc.output} />}
-              <Io label={t(RUN.got)} text={r.verdict === 'tle' ? '' : r.stdout} tone={failed ? 'bad' : undefined} />
+              {r.transcript ? (
+                <>
+                  <Io label={t(RUN.judgeData)} text={tc.input} />
+                  <Talk turns={r.transcript} message={r.message} ok={!failed} />
+                </>
+              ) : (
+                <>
+                  <Io label={t(RUN.input)} text={tc.input} />
+                  {tc.output !== undefined && <Io label={t(RUN.expected)} text={tc.output} />}
+                  <Io label={t(RUN.got)} text={r.verdict === 'tle' ? '' : r.stdout} tone={failed ? 'bad' : undefined} />
+                </>
+              )}
             </div>
             {(r.stderr || r.error) && (
               <div className="pb-4">
@@ -119,7 +150,7 @@ export function ResultRow({ i, tc, r, running }: { i: number; tc: { input: strin
 }
 
 /** Run a solution against the problem's tests, edit it, or feed it your own input. */
-export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: TestCase[]; timeLimitSec: number }) {
+export function RunPanel({ code, tests, timeLimitSec, judge }: { code: string; tests: TestCase[]; timeLimitSec: number; judge?: JudgeFactory }) {
   const { t, num } = useI18n();
   const [editing, setEditing] = useState(false);
   const [src, setSrc] = useState(code);
@@ -136,7 +167,7 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
   const allDone = testsRun.phase === 'done' && !testsRun.compileError && testsRun.results.every(Boolean);
 
   const doRun = () =>
-    custom ? customRun.runAll(src, [{ input }], limit) : testsRun.runAll(src, tests.map((x) => ({ input: x.input, output: x.output })), limit);
+    custom ? customRun.runAll(src, [{ input }], limit, judge) : testsRun.runAll(src, tests.map((x) => ({ input: x.input, output: x.output })), limit, judge);
 
   return (
     <div>
@@ -172,7 +203,7 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
             custom ? 'border-ember/60 bg-ember/10 text-ember' : 'border-seam text-ash hover:bg-iron-2',
           )}
         >
-          <TerminalSquare size={14} /> {t(RUN.customInput)}
+          <TerminalSquare size={14} /> {t(judge ? RUN.judgeData : RUN.customInput)}
         </button>
         {src !== code && (
           <>
@@ -188,7 +219,7 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
         {custom && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <label className="mt-4 block text-sm text-ash/85">
-              {t(RUN.customInput)}
+              {t(judge ? RUN.judgeData : RUN.customInput)}
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -266,6 +297,7 @@ export function RunPanel({ code, tests, timeLimitSec }: { code: string; tests: T
           </button>
         );
       })()}
+      {judge && <p className="mt-3 rounded-lg border border-seam/70 bg-iron/40 px-3 py-2 text-xs leading-relaxed text-ash/85">{t(RUN.interactiveNote)}</p>}
       <p className="mt-3 text-xs text-slate">{t(RUN.timingNote)}</p>
     </div>
   );

@@ -8,8 +8,10 @@ import { PROBLEM_BY_ID } from '@/data/problems';
 import { PROBLEM_PARTS, cfProblemUrl, type ProblemEntry, type ProblemPart } from '@/data/problems/types';
 import { TAG_BY_SLUG } from '@/data/tags/tags';
 import { RatingPill } from '@/components/RatingPill';
-import { IoBlock } from '@/components/CodeBlock';
+import { IoBlock, Transcript } from '@/components/CodeBlock';
+import { RUN } from '@/i18n/runStrings';
 import { RunPanel } from '@/components/RunPanel';
+import { JUDGES } from '@/data/problems/judges';
 import { PageHead } from '@/components/PageHead';
 import { cn } from '@/lib/cn';
 import { JellyRadio } from '@/components/fx/JellyRadio';
@@ -139,7 +141,7 @@ function Solutions({ p }: { p: ProblemEntry }) {
             )}
           </div>
           <div className="mt-4">
-            <RunPanel key={s.id} code={s.code} tests={p.tests} timeLimitSec={p.limits.timeSec} />
+            <RunPanel key={s.id} code={s.code} tests={p.tests} timeLimitSec={p.limits.timeSec} judge={p.interactive ? JUDGES[p.id] : undefined} />
           </div>
         </motion.div>
       </AnimatePresence>
@@ -226,10 +228,14 @@ export default function Problem() {
                   <p className="mb-2 text-sm text-slate">
                     {t(S.problem.sampleN)} {num(i + 1)}
                   </p>
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    <IoBlock label={t(S.problem.input)} text={s.input} />
-                    <IoBlock label={t(S.problem.output)} text={s.output} />
-                  </div>
+                  {s.transcript ? (
+                    <Transcript text={s.transcript} />
+                  ) : (
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <IoBlock label={t(S.problem.input)} text={s.input} />
+                      <IoBlock label={t(S.problem.output)} text={s.output} />
+                    </div>
+                  )}
                   <p className="prose-forge mt-3 text-ash/85">{t(s.explain)}</p>
                 </div>
               ))}
@@ -305,7 +311,7 @@ export default function Problem() {
                     <span className="text-ash/85">{t(c.note)}</span>
                   </p>
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    <IoBlock label={t(S.problem.input)} text={c.input} />
+                    <IoBlock label={t(p.interactive ? RUN.judgeData : S.problem.input)} text={c.input} />
                     <IoBlock label={t(S.problem.output)} text={c.output} />
                   </div>
                 </li>

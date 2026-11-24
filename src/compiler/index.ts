@@ -11,7 +11,7 @@ export type CompileResult =
   | { ok: false; kind: 'compile' | 'load'; message: string };
 
 export type RunResult = {
-  status: 'ok' | 'runtime_error' | 'output_limit' | 'time_limit';
+  status: 'ok' | 'runtime_error' | 'output_limit' | 'time_limit' | 'need_input';
   stdout: string;
   stderr: string;
   exitCode: number;
@@ -73,7 +73,7 @@ export function compile(code: string, onProgress?: (p: Progress) => void): Promi
 
 let runner: Worker | null = null;
 
-export function run(module: WebAssembly.Module, stdin: string, timeLimitMs: number): Promise<RunResult> {
+export function run(module: WebAssembly.Module, stdin: string, timeLimitMs: number, blockOnEof = false): Promise<RunResult> {
   return new Promise((resolve) => {
     runner ??= new Worker(new URL('./runner.worker.ts', import.meta.url), { type: 'module' });
     const w = runner;
@@ -93,7 +93,7 @@ export function run(module: WebAssembly.Module, stdin: string, timeLimitMs: numb
       resolve(rest);
     };
     w.addEventListener('message', onMsg);
-    w.postMessage({ id, module, stdin } satisfies RunRequest);
+    w.postMessage({ id, module, stdin, blockOnEof } satisfies RunRequest);
   });
 }
 

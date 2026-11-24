@@ -57,6 +57,12 @@ export type Sample = {
   input: string;
   output: string;
   explain: L;
+  /**
+   * Interactive problems only: the conversation, one line per message.
+   * "> text" is what the program prints, "< text" is the judge's reply.
+   * `input` then holds the judge's hidden data and `output` is "OK".
+   */
+  transcript?: string;
 };
 
 export type TestCase = {
@@ -83,6 +89,12 @@ export type RelatedProblem = {
 export type ProblemEntry = {
   /** 1. overview */
   id: string; // `${contestId}${index}`, e.g. "4A"
+  /**
+   * True when the program talks to a judge (queries and replies) instead of reading a fixed
+   * input. Needs a judge in `src/data/problems/judges`; test `input` is the judge's hidden data
+   * and test `output` is "OK".
+   */
+  interactive?: boolean;
   contestId: number;
   index: string;
   name: string;

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Check, Copy } from 'lucide-react';
 import { useI18n } from '@/i18n/I18nProvider';
 import { S } from '@/i18n/strings';
+import { RUN } from '@/i18n/runStrings';
 import { cn } from '@/lib/cn';
 
 export const forgeTheme: PrismTheme = {
@@ -106,6 +107,32 @@ export function IoBlock({ label, text }: { label: string; text: string }) {
       </div>
       <pre className="max-h-64 overflow-auto rounded-lg border border-seam bg-[#141c28] px-3.5 py-3 font-mono text-[0.86rem] leading-relaxed text-ash">
         {text}
+      </pre>
+    </div>
+  );
+}
+
+/** An interactive sample: "> " lines are printed by the program, "< " lines are the judge's replies. */
+export function Transcript({ text }: { text: string }) {
+  const { t } = useI18n();
+  const lines = text.split('\n');
+  return (
+    <div className="min-w-0">
+      <div className="mb-1.5 flex items-center justify-between text-sm text-slate">
+        <span>
+          {t(RUN.conversation)} <span className="text-slate/70">({t(RUN.youPrint)} → · ← {t(RUN.judgeReplies)})</span>
+        </span>
+      </div>
+      <pre className="max-h-72 overflow-auto rounded-lg border border-seam bg-[#141c28] px-3.5 py-3 font-mono text-[0.86rem] leading-relaxed">
+        {lines.map((l, i) => {
+          const mine = l.startsWith('>');
+          return (
+            <span key={i} className={mine ? 'block text-ash' : 'block text-ember'}>
+              {mine ? '→ ' : '← '}
+              {l.replace(/^[<>]\s?/, '')}
+            </span>
+          );
+        })}
       </pre>
     </div>
   );
