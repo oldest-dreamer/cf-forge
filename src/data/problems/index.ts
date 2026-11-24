@@ -55,6 +55,8 @@ import { p1288A, p1301B, p1574C, p439D } from './wave17a.ts';
 import { p1730B, p1156C, p1244E, p1538G } from './wave17b.ts';
 import { p1978B, p2009E, p289B, p1312C } from './wave17c.ts';
 import { p1413E, p808E, p1059D, p1119E } from './wave17d.ts';
+import { p201B, p613A, p626E, p660F } from './wave17e.ts';
+import { p455C, p2020C, p98C, p1316C } from './wave17f.ts';
 import { p112A, p281A, p59A, p520A, p41A, p734A, p131A, p96A, p339A, p469A, p546A, p122A, p69A } from './wave1b.ts';
 
 /** The CF Forge problem pool. New waves are appended here. */
@@ -123,6 +125,8 @@ export const PROBLEMS: ProblemEntry[] = [
   // wave 17 (ternary search, divide and conquer, meet in the middle)
   p1288A, p1301B, p1574C, p439D, p1730B, p1156C, p1244E, p1538G,
   p1978B, p2009E, p289B, p1312C, p1413E, p808E, p1059D, p1119E,
+  p201B, p613A, p626E, p660F,
+  p455C, p2020C, p98C, p1316C,
 ];
 
 export const PROBLEM_BY_ID: Record<string, ProblemEntry> = Object.fromEntries(
