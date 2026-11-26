@@ -4,8 +4,8 @@ import { motion, useReducedMotion } from 'motion/react';
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * Scroll reveal: fades and lifts 16px once when it enters the viewport.
- * Only opacity and transform are animated. `index` staggers siblings by 60ms.
+ * Scroll reveal: fades and lifts once when it enters the viewport.
+ * Uses amount: 'some' so tall sections never get stuck invisible.
  */
 export function Reveal({
   children,
@@ -30,7 +30,7 @@ export function Reveal({
       className={className}
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 'some' }}
       transition={{ duration: 0.4, ease: EASE, delay: Math.min(index, 8) * 0.06 }}
     >
       {children}
