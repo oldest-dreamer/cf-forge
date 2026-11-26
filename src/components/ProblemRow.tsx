@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
 import type { ProblemEntry } from '@/data/problems/types';
 import { TAG_BY_SLUG } from '@/data/tags/tags';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -10,19 +9,12 @@ import { useAccount } from '@/lib/account';
 import { problemKey } from '@/lib/cf';
 import { CFS } from '@/i18n/cfStrings';
 
-export function ProblemRow({ p, featured, index = 0 }: { p: ProblemEntry; featured?: boolean; index?: number }) {
+export function ProblemRow({ p, featured }: { p: ProblemEntry; featured?: boolean; index?: number }) {
   const { t, num } = useI18n();
-  const reduce = useReducedMotion();
   const { solved } = useAccount();
   const done = solved.has(problemKey(p));
   return (
-    <motion.li
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-10px' }}
-      transition={{ type: 'spring', stiffness: 340, damping: 28, delay: Math.min(index, 10) * 0.03 }}
-      className="border-b border-seam/70"
-    >
+    <li className="border-b border-seam/70">
       <Link
         to={`/problems/${p.id}`}
         className="group relative grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 py-4 transition-colors hover:bg-iron/40 sm:grid-cols-[5rem_1fr_auto_auto]"
@@ -53,6 +45,6 @@ export function ProblemRow({ p, featured, index = 0 }: { p: ProblemEntry; featur
         </span>
         <RatingPill rating={p.rating} className="mr-2" />
       </Link>
-    </motion.li>
+    </li>
   );
 }
